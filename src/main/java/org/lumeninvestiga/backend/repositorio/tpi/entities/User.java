@@ -1,13 +1,15 @@
 package org.lumeninvestiga.backend.repositorio.tpi.entities;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
+import org.lumeninvestiga.backend.repositorio.tpi.utils.MethodList;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @Entity
 @Inheritance(
-        strategy = InheritanceType.TABLE_PER_CLASS
+        strategy = InheritanceType.JOINED
 )
 @Table(
         name = "users"
@@ -30,22 +32,25 @@ public class User {
             orphanRemoval = true,
             mappedBy = "user"
     )
+    @JsonManagedReference
     private UserDetail userDetail;
     @OneToMany(
             cascade = CascadeType.ALL,
-            orphanRemoval = true,
             mappedBy = "user"
     )
+    @JsonManagedReference
     private List<Review> reviews;
     @OneToMany(
             cascade = CascadeType.ALL,
             orphanRemoval = true,
             mappedBy = "user"
     )
-    private List<StorableItem> storableItem;
+    @JsonManagedReference
+    private List<StorableItem> storableItems;
 
     public User() {
         this.reviews = new ArrayList<>();
+        this.storableItems = new ArrayList<>();
     }
 
     public Long getId() {
@@ -58,6 +63,7 @@ public class User {
 
     public void setUserDetail(UserDetail userDetail) {
         this.userDetail = userDetail;
+        userDetail.setUser(this);
     }
 
     public List<Review> getReviews() {
@@ -68,11 +74,24 @@ public class User {
         this.reviews = reviews;
     }
 
-    public List<StorableItem> getStorableItem() {
-        return storableItem;
+    public List<StorableItem> getStorableItems() {
+        return storableItems;
     }
 
-    public void setStorableItem(List<StorableItem> storableItem) {
-        this.storableItem = storableItem;
+    public void setStorableItems(List<StorableItem> storableItems) {
+        this.storableItems = storableItems;
+    }
+
+    //TODO: Arreglar la relacion de User - Review
+    public void addReview(Review review) {
+        this.reviews.add(review);
+        review.setUser(this);
+
+    }
+
+    public void removeReview(Review review) {
+        this.reviews.remove(review);
+        review.setUser(null);
+
     }
 }

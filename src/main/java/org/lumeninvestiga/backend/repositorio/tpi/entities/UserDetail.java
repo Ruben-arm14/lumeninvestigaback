@@ -1,6 +1,9 @@
 package org.lumeninvestiga.backend.repositorio.tpi.entities;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
+import org.lumeninvestiga.backend.repositorio.tpi.utils.MethodList;
 
 @Entity
 @Table(
@@ -20,6 +23,7 @@ public class UserDetail {
     @JoinColumn(
             name = "id_user"
     )
+    @JsonBackReference
     private User user;
 
     public UserDetail() {

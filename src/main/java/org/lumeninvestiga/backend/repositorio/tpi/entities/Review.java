@@ -1,5 +1,7 @@
 package org.lumeninvestiga.backend.repositorio.tpi.entities;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
 @Entity
@@ -9,15 +11,23 @@ import jakarta.persistence.*;
 public class Review {
     @Id
     @GeneratedValue(
-            strategy = GenerationType.IDENTITY
+            strategy = GenerationType.SEQUENCE,
+            generator = "review_seq"
+    )
+    @SequenceGenerator(
+            name = "review_seq",
+            sequenceName = "review_sequence",
+            allocationSize = 1
     )
     private Long id;
     private boolean liked;
     private String comment;
     @ManyToOne
     @JoinColumn(
-            name = "user_id"
+            name = "user_id",
+            nullable = false
     )
+    @JsonBackReference
     private User user;
 
     public Review() {
@@ -52,4 +62,12 @@ public class Review {
     public void setUser(User user) {
         this.user = user;
     }
+
+//    public void removeUser() {
+//        if(user != null) {
+//            user.getReviews().remove(this);
+//        }
+//        this.user = null;
+//    }
+
 }

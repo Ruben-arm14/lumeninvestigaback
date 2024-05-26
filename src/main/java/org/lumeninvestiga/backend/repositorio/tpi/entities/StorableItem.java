@@ -1,5 +1,7 @@
 package org.lumeninvestiga.backend.repositorio.tpi.entities;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
@@ -21,6 +23,7 @@ public class StorableItem {
     @JoinColumn(
             name = "user_id"
     )
+    @JsonBackReference
     private User user;
 
     public StorableItem() {
