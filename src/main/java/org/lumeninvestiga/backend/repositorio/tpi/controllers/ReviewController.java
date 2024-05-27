@@ -1,6 +1,6 @@
 package org.lumeninvestiga.backend.repositorio.tpi.controllers;
 
-import org.lumeninvestiga.backend.repositorio.tpi.entities.Review;
+import org.lumeninvestiga.backend.repositorio.tpi.entities.user.Review;
 import org.lumeninvestiga.backend.repositorio.tpi.services.ReviewService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

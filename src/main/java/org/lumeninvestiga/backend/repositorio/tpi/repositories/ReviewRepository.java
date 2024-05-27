@@ -1,6 +1,6 @@
 package org.lumeninvestiga.backend.repositorio.tpi.repositories;
 
-import org.lumeninvestiga.backend.repositorio.tpi.entities.Review;
+import org.lumeninvestiga.backend.repositorio.tpi.entities.user.Review;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

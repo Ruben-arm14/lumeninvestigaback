@@ -1,9 +1,7 @@
-package org.lumeninvestiga.backend.repositorio.tpi.entities;
+package org.lumeninvestiga.backend.repositorio.tpi.entities.user;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
-import org.lumeninvestiga.backend.repositorio.tpi.utils.MethodList;
 
 @Entity
 @Table(
@@ -21,7 +19,8 @@ public class UserDetail {
     //private Image imageProfile;
     @OneToOne
     @JoinColumn(
-            name = "id_user"
+            name = "id_user",
+            nullable = false
     )
     @JsonBackReference
     private User user;

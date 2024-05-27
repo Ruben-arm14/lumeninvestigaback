@@ -1,4 +1,4 @@
-package org.lumeninvestiga.backend.repositorio.tpi.entities;
+package org.lumeninvestiga.backend.repositorio.tpi.entities.user;
 
 import jakarta.persistence.*;
 

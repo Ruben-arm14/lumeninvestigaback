@@ -1,8 +1,8 @@
 package org.lumeninvestiga.backend.repositorio.tpi;
 
-import org.lumeninvestiga.backend.repositorio.tpi.entities.Review;
-import org.lumeninvestiga.backend.repositorio.tpi.entities.User;
-import org.lumeninvestiga.backend.repositorio.tpi.entities.UserDetail;
+import org.lumeninvestiga.backend.repositorio.tpi.entities.user.Review;
+import org.lumeninvestiga.backend.repositorio.tpi.entities.user.User;
+import org.lumeninvestiga.backend.repositorio.tpi.entities.user.UserDetail;
 import org.lumeninvestiga.backend.repositorio.tpi.repositories.ReviewRepository;
 import org.lumeninvestiga.backend.repositorio.tpi.repositories.UserRepository;
 import org.springframework.boot.CommandLineRunner;

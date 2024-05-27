@@ -1,8 +1,8 @@
-package org.lumeninvestiga.backend.repositorio.tpi.entities;
+package org.lumeninvestiga.backend.repositorio.tpi.entities.user;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
-import org.lumeninvestiga.backend.repositorio.tpi.utils.MethodList;
+import org.lumeninvestiga.backend.repositorio.tpi.entities.data.StorableItem;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -82,7 +82,6 @@ public class User {
         this.storableItems = storableItems;
     }
 
-    //TODO: Arreglar la relacion de User - Review
     public void addReview(Review review) {
         this.reviews.add(review);
         review.setUser(this);
@@ -93,5 +92,15 @@ public class User {
         this.reviews.remove(review);
         review.setUser(null);
 
+    }
+
+    public void addStorableItem(StorableItem storableItem) {
+        this.storableItems.add(storableItem);
+        storableItem.setUser(this);
+    }
+
+    public void removeStorableItem(StorableItem storableItem) {
+        this.storableItems.remove(storableItem);
+        storableItem.setUser(null);
     }
 }

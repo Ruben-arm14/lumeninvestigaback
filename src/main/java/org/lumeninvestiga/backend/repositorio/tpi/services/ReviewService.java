@@ -1,6 +1,6 @@
 package org.lumeninvestiga.backend.repositorio.tpi.services;
 
-import org.lumeninvestiga.backend.repositorio.tpi.entities.Review;
+import org.lumeninvestiga.backend.repositorio.tpi.entities.user.Review;
 
 import java.util.List;
 import java.util.Optional;

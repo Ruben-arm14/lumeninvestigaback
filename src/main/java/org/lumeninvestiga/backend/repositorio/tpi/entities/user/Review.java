@@ -1,7 +1,6 @@
-package org.lumeninvestiga.backend.repositorio.tpi.entities;
+package org.lumeninvestiga.backend.repositorio.tpi.entities.user;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
 @Entity

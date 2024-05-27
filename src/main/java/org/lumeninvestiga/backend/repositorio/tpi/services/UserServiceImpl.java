@@ -1,6 +1,6 @@
 package org.lumeninvestiga.backend.repositorio.tpi.services;
 
-import org.lumeninvestiga.backend.repositorio.tpi.entities.User;
+import org.lumeninvestiga.backend.repositorio.tpi.entities.user.User;
 import org.lumeninvestiga.backend.repositorio.tpi.repositories.UserRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
