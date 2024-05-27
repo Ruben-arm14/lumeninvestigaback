@@ -10,13 +10,7 @@ import jakarta.persistence.*;
 public class Review {
     @Id
     @GeneratedValue(
-            strategy = GenerationType.SEQUENCE,
-            generator = "review_seq"
-    )
-    @SequenceGenerator(
-            name = "review_seq",
-            sequenceName = "review_sequence",
-            allocationSize = 1
+            strategy = GenerationType.IDENTITY
     )
     private Long id;
     private boolean liked;

@@ -1,9 +1,6 @@
 package org.lumeninvestiga.backend.repositorio.tpi.entities.data;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.OneToOne;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -13,6 +10,11 @@ import java.util.Set;
         name = "article_details"
 )
 public class ArticleDetail {
+    @Id
+    @GeneratedValue(
+            strategy = GenerationType.IDENTITY
+    )
+    private Long id;
     private String area;
     private String subArea;
     private String period;
@@ -29,6 +31,10 @@ public class ArticleDetail {
         this.subArea = "";
         this.period = "";
         this.keywords = new HashSet<>();
+    }
+
+    public Long getId() {
+        return id;
     }
 
     public String getArea() {

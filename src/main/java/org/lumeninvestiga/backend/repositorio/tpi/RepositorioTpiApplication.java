@@ -38,7 +38,7 @@ public class RepositorioTpiApplication {
 
 		return args -> {
 			userRepository.save(user);
-			System.out.println("Usuario guardado" + user.getUserDetail().getName());
+			System.out.println("Usuario guardado " + user.getUserDetail().getName());
 		};
 	}
 
