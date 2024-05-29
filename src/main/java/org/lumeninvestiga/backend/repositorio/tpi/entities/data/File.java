@@ -9,19 +9,12 @@ import jakarta.persistence.*;
         name = "files"
 )
 public class File extends StorableItem {
-    @Column(
-            nullable = false,
-            updatable = false,
-            columnDefinition = "LONGBLOB"
-    )
     @JsonIgnore
+    @Column(nullable = false, updatable = false, columnDefinition = "LONGBLOB")
     private byte[] data;
+    @Column(name = "mime_type", nullable = false)
     private String mimeType;
-    @ManyToOne
-    @JoinColumn(
-            name = "folder_id",
-            nullable = false
-    )
+    @ManyToOne(targetEntity = Folder.class)
     @JsonBackReference
     private Folder folder;
 

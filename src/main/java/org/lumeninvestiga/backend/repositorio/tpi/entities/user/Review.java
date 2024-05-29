@@ -1,15 +1,12 @@
 package org.lumeninvestiga.backend.repositorio.tpi.entities.user;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 
 @Entity
 @Table(
         name = "reviews"
 )
-@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class Review {
     @Id
     @GeneratedValue(
@@ -20,13 +17,8 @@ public class Review {
     private boolean liked;
     @Column(nullable = false)
     private String comment;
-    @ManyToOne(
-            fetch = FetchType.LAZY
-    )
-    @JoinColumn(
-            name = "user_id",
-            nullable = false
-    )
+
+    @ManyToOne(targetEntity = User.class)
     @JsonBackReference
     private User user;
 
@@ -62,12 +54,4 @@ public class Review {
     public void setUser(User user) {
         this.user = user;
     }
-
-//    public void removeUser() {
-//        if(user != null) {
-//            user.getReviews().remove(this);
-//        }
-//        this.user = null;
-//    }
-
 }

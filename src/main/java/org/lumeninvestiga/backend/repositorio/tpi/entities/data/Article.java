@@ -1,6 +1,5 @@
 package org.lumeninvestiga.backend.repositorio.tpi.entities.data;
 
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.OneToOne;
@@ -12,10 +11,12 @@ import jakarta.persistence.Table;
 )
 public class Article extends File{
     @OneToOne(
-            cascade = CascadeType.ALL,
-            orphanRemoval = true,
-            mappedBy = "article"
+            targetEntity = ArticleDetail.class,
+            cascade = {
+              CascadeType.PERSIST,
+              CascadeType.REMOVE,
+              CascadeType.REFRESH
+            }
     )
-    @JsonManagedReference
     private ArticleDetail articleDetail;
 }

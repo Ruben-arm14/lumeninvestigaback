@@ -1,7 +1,6 @@
 package org.lumeninvestiga.backend.repositorio.tpi.entities.user;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
@@ -17,7 +16,6 @@ import java.util.List;
 @Table(
         name = "users"
 )
-@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class User {
     @Id
     @GeneratedValue(
@@ -31,29 +29,40 @@ public class User {
     )
     private Long id;
     @OneToOne(
-            fetch = FetchType.LAZY,
-            cascade = CascadeType.ALL,
-            orphanRemoval = true,
-            mappedBy = "user"
-    )
+            targetEntity = UserDetail.class,
+            cascade = {
+                    CascadeType.PERSIST,
+                    CascadeType.REMOVE
+            })
     @JsonManagedReference
     private UserDetail userDetail;
+
     @OneToMany(
+            targetEntity = Review.class,
+            cascade = {
+                    CascadeType.PERSIST,
+                    CascadeType.REMOVE
+            },
             fetch = FetchType.LAZY,
-            cascade = CascadeType.ALL,
             mappedBy = "user"
     )
     @JsonManagedReference
     private List<Review> reviews;
+
     @OneToMany(
+            targetEntity = StorableItem.class,
+            cascade = CascadeType.REMOVE,
             fetch = FetchType.LAZY,
-            cascade = CascadeType.ALL,
-            orphanRemoval = true,
             mappedBy = "user"
     )
     @JsonManagedReference
     private List<StorableItem> storableItems;
-    @ManyToMany
+
+    @ManyToMany(
+            targetEntity = Role.class,
+            cascade = CascadeType.MERGE,
+            fetch = FetchType.LAZY
+    )
     @JoinTable(
             name = "users_roles",
             joinColumns = @JoinColumn(
@@ -66,10 +75,11 @@ public class User {
                     columnNames = {"users_id", "roles_id"}
             )
     )
-    @JsonManagedReference
     private List<Role> roles;
+
     @Column(nullable = false)
     private boolean enabled;
+
     @JsonIgnore
     @JsonProperty(
             access = JsonProperty.Access.WRITE_ONLY
@@ -93,7 +103,6 @@ public class User {
 
     public void setUserDetail(UserDetail userDetail) {
         this.userDetail = userDetail;
-        userDetail.setUser(this);
     }
 
     public List<Review> getReviews() {
@@ -160,11 +169,9 @@ public class User {
 
     public void addRole(Role role) {
         this.roles.add(role);
-        role.getUsers().add(this);
     }
 
     public void removeRole(Role role) {
         this.roles.remove(role);
-        role.getUsers().add(this);
     }
 }

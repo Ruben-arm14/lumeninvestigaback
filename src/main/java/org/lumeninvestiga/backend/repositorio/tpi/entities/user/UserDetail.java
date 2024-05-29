@@ -1,9 +1,8 @@
 package org.lumeninvestiga.backend.repositorio.tpi.entities.user;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 
@@ -11,37 +10,22 @@ import jakarta.validation.constraints.Size;
 @Table(
         name = "user_details"
 )
-@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class UserDetail {
     @Id
     @GeneratedValue(
             strategy = GenerationType.IDENTITY
     )
     private Long id;
-    @NotBlank
-    @Size(min = 4, max = 12)
     @Column(nullable = false)
     private String name;
-    @NotBlank
-    @Size(min = 4, max = 12)
-    @Column(nullable = false)
+    @Column(name = "last_name", nullable = false)
     private String lastName;
-    @Column(
-            nullable = false,
-            unique = true
-    )
+    @Column(name="email_address", nullable = false, unique = true)
     private String emailAddress;
-    @Column(nullable = false)
+    @Column(nullable = true)
     private String password;
-    //private Image imageProfile;
-    @OneToOne(
-            fetch = FetchType.LAZY
-    )
-    @JoinColumn(
-            name = "id_user",
-            nullable = false
-    )
     @JsonBackReference
+    @Transient
     private User user;
 
     public UserDetail() {
@@ -85,14 +69,6 @@ public class UserDetail {
     public void setPassword(String password) {
         this.password = password;
     }
-
-    //    public Image getImageProfile() {
-//        return imageProfile;
-//    }
-//
-//    public void setImageProfile(Image imageProfile) {
-//        this.imageProfile = imageProfile;
-//    }
 
     public User getUser() {
         return user;

@@ -1,10 +1,6 @@
 package org.lumeninvestiga.backend.repositorio.tpi.entities.user;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
-
-import java.util.ArrayList;
-import java.util.List;
 
 @Entity
 @Table(
@@ -17,15 +13,9 @@ public class Course {
     )
     private Long id;
     private String name;
-    @ManyToMany(
-            mappedBy = "courses"
-    )
-    @JsonBackReference
-    private List<Professor> professors;
 
     public Course() {
         this.name = "";
-        this.professors = new ArrayList<>();
     }
 
     public Long getId() {
@@ -38,13 +28,5 @@ public class Course {
 
     public void setName(String name) {
         this.name = name;
-    }
-
-    public List<Professor> getProfessors() {
-        return professors;
-    }
-
-    public void setProfessors(List<Professor> professors) {
-        this.professors = professors;
     }
 }

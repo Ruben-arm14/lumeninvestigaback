@@ -14,8 +14,13 @@ public class Folder extends StorableItem {
     @Column(nullable = false)
     private boolean shared;
     @OneToMany(
-            cascade = CascadeType.ALL,
-            orphanRemoval = true,
+            targetEntity = File.class,
+            cascade = {
+                    CascadeType.PERSIST,
+                    CascadeType.REFRESH,
+                    CascadeType.REMOVE
+            },
+            fetch = FetchType.LAZY,
             mappedBy = "folder"
     )
     @JsonManagedReference

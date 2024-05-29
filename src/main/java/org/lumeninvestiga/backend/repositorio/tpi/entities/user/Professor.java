@@ -1,8 +1,8 @@
 package org.lumeninvestiga.backend.repositorio.tpi.entities.user;
 
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -10,13 +10,7 @@ import java.util.List;
         name = "professors"
 )
 public class Professor extends User{
-    @ManyToMany(
-            cascade = {
-                    CascadeType.PERSIST,
-                    CascadeType.REFRESH,
-                    CascadeType.REMOVE
-            }
-    )
+    @ManyToMany
     @JoinTable(
             name = "professor_course",
             joinColumns = @JoinColumn(
@@ -29,11 +23,11 @@ public class Professor extends User{
                     columnNames = {"professor_id", "course_id"}
             )
     )
-    @JsonManagedReference
     private List<Course> courses;
 
     public Professor() {
         super();
+        this.courses = new ArrayList<>();
     }
 
     public List<Course> getCourses() {
@@ -42,5 +36,13 @@ public class Professor extends User{
 
     public void setCourses(List<Course> courses) {
         this.courses = courses;
+    }
+
+    public void addCourse(Course course) {
+        this.courses.add(course);
+    }
+
+    public void removeCourse(Course course) {
+        this.courses.remove(course);
     }
 }
