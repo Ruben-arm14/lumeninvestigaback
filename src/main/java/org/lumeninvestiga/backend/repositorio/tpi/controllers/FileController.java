@@ -18,9 +18,13 @@ public class FileController {
         this.fileService = FileService;
     }
 
-    @PostMapping(consumes = "application/json", produces = "application/json")
-    public ResponseEntity<?> createFile(@RequestBody MultipartFile item) {
-        return ResponseEntity.ok(fileService.saveFile(item));
+    @PostMapping(consumes = "multipart/form-data", produces = "application/json")
+    public ResponseEntity<?> createFile(@RequestParam("file") MultipartFile file) {
+        Optional<File> fileOptional = fileService.saveFile(file);
+        if (fileOptional.isPresent()) {
+            return ResponseEntity.status(HttpStatus.CREATED).body(fileOptional.get());
+        }
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Error saving file");
     }
 
     @GetMapping
@@ -28,7 +32,7 @@ public class FileController {
         return ResponseEntity.status(HttpStatus.OK).body(fileService.getAllFiles());
     }
 
-    @GetMapping("/{name}")
+    @GetMapping("by/{name}")
     public ResponseEntity<?> readByName(@PathVariable String name) {
         Optional<File> fileOptional = fileService.getFileByName(name);
         if(fileOptional.isPresent()) {
@@ -39,17 +43,25 @@ public class FileController {
 
     @GetMapping("/{id}")
     public ResponseEntity<?> readFileById(@PathVariable Long id) {
-        return ResponseEntity.ok(fileService.getFileById(id));
+        Optional<File> fileOptional = fileService.getFileById(id);
+        if (fileOptional.isPresent()) {
+            return ResponseEntity.ok(fileOptional.get());
+        }
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
     }
 
     //Solo se puede modificar el nombre
     @PutMapping("/{id}")
-    public ResponseEntity<?> updateFileById(@PathVariable Long id, @RequestBody File file) {
+    public ResponseEntity<?> updateFileById(@PathVariable Long id, @RequestParam("name") File file) {
         Optional<File> fileOptional = fileService.getFileById(id);
-        fileOptional.ifPresent(fileDb -> {
+        if (fileOptional.isPresent()) {
+            File fileDb = fileOptional.get();
             fileDb.setName(file.getName());
-        });
-        return ResponseEntity.status(HttpStatus.CREATED).body(fileService.saveFile((MultipartFile) fileOptional.get()));
+            //TODO: cambiar a un dto con un mapper
+            fileService.saveFile((MultipartFile) fileDb);
+            return ResponseEntity.status(HttpStatus.CREATED).body(fileDb);
+        }
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
     }
 
     @DeleteMapping("/{id}")

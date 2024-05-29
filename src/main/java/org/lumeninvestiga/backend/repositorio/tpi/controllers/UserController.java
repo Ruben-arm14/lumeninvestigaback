@@ -2,6 +2,7 @@ package org.lumeninvestiga.backend.repositorio.tpi.controllers;
 
 import jakarta.validation.Valid;
 import org.lumeninvestiga.backend.repositorio.tpi.entities.user.User;
+import org.lumeninvestiga.backend.repositorio.tpi.entities.user.UserDetail;
 import org.lumeninvestiga.backend.repositorio.tpi.services.UserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -42,12 +43,12 @@ public class UserController {
 
     //Solo se puede modificar el nombre, apellido y correo
     @PutMapping("/{id}")
-    public ResponseEntity<?> updateUserById(@PathVariable Long id, @RequestBody User user) {
+    public ResponseEntity<?> updateUserById(@PathVariable Long id, @RequestBody UserDetail userDetail) {
         Optional<User> userOptional = userService.getUserById(id);
         userOptional.ifPresent(userDb -> {
-            userDb.getUserDetail().setName(user.getUserDetail().getName());
-            userDb.getUserDetail().setLastName(user.getUserDetail().getLastName());
-            userDb.getUserDetail().setEmailAddress(user.getUserDetail().getEmailAddress());
+            userDb.getUserDetail().setName(userDetail.getName());
+            userDb.getUserDetail().setLastName(userDetail.getLastName());
+            userDb.getUserDetail().setEmailAddress(userDetail.getEmailAddress());
         });
         return ResponseEntity.status(HttpStatus.CREATED).body(userService.saveUser(userOptional.get()));
     }
