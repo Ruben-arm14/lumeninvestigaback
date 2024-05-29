@@ -26,7 +26,7 @@ public class UserServiceImpl implements UserService{
 
     @Override
     @Transactional
-    public Optional<User> createUser(User user) {
+    public Optional<User> saveUser(User user) {
         Optional<Role> optionalRoleUser = roleRepository.findByName("ROLE_USER");
         List<Role> roles = new ArrayList<>();
         optionalRoleUser.ifPresent(roles::add);

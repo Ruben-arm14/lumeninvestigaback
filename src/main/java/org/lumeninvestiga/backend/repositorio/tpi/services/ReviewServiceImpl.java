@@ -18,7 +18,7 @@ public class ReviewServiceImpl implements ReviewService{
 
     @Override
     @Transactional
-    public Optional<Review> createReview(Review review) {
+    public Optional<Review> saveReview(Review review) {
         return Optional.of(reviewRepository.save(review));
     }
 
