@@ -1,5 +1,6 @@
 package org.lumeninvestiga.backend.repositorio.tpi.entities.user;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 
 import java.util.List;
@@ -28,6 +29,7 @@ public class Professor extends User{
                     columnNames = {"professor_id", "course_id"}
             )
     )
+    @JsonManagedReference
     private List<Course> courses;
 
     public Professor() {

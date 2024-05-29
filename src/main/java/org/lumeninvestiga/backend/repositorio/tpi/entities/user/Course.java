@@ -1,5 +1,6 @@
 package org.lumeninvestiga.backend.repositorio.tpi.entities.user;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 
 import java.util.ArrayList;
@@ -19,6 +20,7 @@ public class Course {
     @ManyToMany(
             mappedBy = "courses"
     )
+    @JsonBackReference
     private List<Professor> professors;
 
     public Course() {

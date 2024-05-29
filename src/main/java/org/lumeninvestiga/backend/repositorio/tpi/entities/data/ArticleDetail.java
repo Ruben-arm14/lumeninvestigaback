@@ -1,5 +1,6 @@
 package org.lumeninvestiga.backend.repositorio.tpi.entities.data;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 
 import java.util.HashSet;
@@ -15,15 +16,21 @@ public class ArticleDetail {
             strategy = GenerationType.IDENTITY
     )
     private Long id;
+    @Column(nullable = false)
     private String area;
+    @Column(nullable = false)
     private String subArea;
+    @Column(nullable = false)
     private String period;
+    @Column(nullable = false)
     private ODS_GOALS ODS;
+    @Column(nullable = false)
     private Set<String> keywords;
     @OneToOne
     @JoinColumn(
             name = "article_id"
     )
+    @JsonBackReference
     private Article article;
 
     public ArticleDetail() {

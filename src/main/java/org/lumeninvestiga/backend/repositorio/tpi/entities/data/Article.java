@@ -1,5 +1,6 @@
 package org.lumeninvestiga.backend.repositorio.tpi.entities.data;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.OneToOne;
@@ -15,5 +16,6 @@ public class Article extends File{
             orphanRemoval = true,
             mappedBy = "article"
     )
+    @JsonManagedReference
     private ArticleDetail articleDetail;
 }

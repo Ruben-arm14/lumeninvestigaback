@@ -1,5 +1,6 @@
 package org.lumeninvestiga.backend.repositorio.tpi.entities.data;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
 
@@ -8,7 +9,9 @@ import jakarta.persistence.Table;
         name = "images"
 )
 public class Image extends File{
+    @Column(nullable = false)
     private int width;
+    @Column(nullable = false)
     private int height;
 
     public int getWidth() {

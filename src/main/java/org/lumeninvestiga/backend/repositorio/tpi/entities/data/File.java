@@ -1,22 +1,28 @@
 package org.lumeninvestiga.backend.repositorio.tpi.entities.data;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.Table;
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import jakarta.persistence.*;
 
 @Entity
 @Table(
         name = "files"
 )
 public class File extends StorableItem {
+    @Column(
+            nullable = false,
+            updatable = false,
+            columnDefinition = "LONGBLOB"
+    )
+    @JsonIgnore
     private byte[] data;
-    private MIME_TYPE mimeType;
+    private String mimeType;
     @ManyToOne
     @JoinColumn(
             name = "folder_id",
             nullable = false
     )
+    @JsonBackReference
     private Folder folder;
 
     public byte[] getData() {
@@ -27,11 +33,11 @@ public class File extends StorableItem {
         this.data = data;
     }
 
-    public MIME_TYPE getMimeType() {
+    public String getMimeType() {
         return mimeType;
     }
 
-    public void setMimeType(MIME_TYPE mimeType) {
+    public void setMimeType(String mimeType) {
         this.mimeType = mimeType;
     }
 

@@ -1,24 +1,45 @@
 package org.lumeninvestiga.backend.repositorio.tpi.services;
 
+import org.lumeninvestiga.backend.repositorio.tpi.entities.user.Role;
 import org.lumeninvestiga.backend.repositorio.tpi.entities.user.User;
+import org.lumeninvestiga.backend.repositorio.tpi.repositories.RoleRepository;
 import org.lumeninvestiga.backend.repositorio.tpi.repositories.UserRepository;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 @Service
 public class UserServiceImpl implements UserService{
     private final UserRepository userRepository;
+    private final RoleRepository roleRepository;
+    private final PasswordEncoder passwordEncoder;
 
-    public UserServiceImpl(UserRepository userRepository) {
+    public UserServiceImpl(UserRepository userRepository, RoleRepository roleRepository, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
+        this.roleRepository = roleRepository;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @Override
     @Transactional
     public Optional<User> createUser(User user) {
+        Optional<Role> optionalRoleUser = roleRepository.findByName("ROLE_USER");
+        List<Role> roles = new ArrayList<>();
+        optionalRoleUser.ifPresent(roles::add);
+
+        if(user.isAdmin()) {
+            Optional<Role> optionalRoleAdmin = roleRepository.findByName("ROLE_ADMIN");
+            optionalRoleAdmin.ifPresent(roles::add);
+        }
+
+        user.setRoles(roles);
+        user.getUserDetail().setPassword(
+                passwordEncoder.encode(user.getUserDetail().getPassword())
+        );
         return Optional.of(userRepository.save(user));
     }
 

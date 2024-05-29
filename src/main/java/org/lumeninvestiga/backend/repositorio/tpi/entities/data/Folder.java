@@ -1,9 +1,7 @@
 package org.lumeninvestiga.backend.repositorio.tpi.entities.data;
 
-import jakarta.persistence.CascadeType;
-import jakarta.persistence.Entity;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.Table;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+import jakarta.persistence.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,12 +11,14 @@ import java.util.List;
         name = "folders"
 )
 public class Folder extends StorableItem {
+    @Column(nullable = false)
     private boolean shared;
     @OneToMany(
             cascade = CascadeType.ALL,
             orphanRemoval = true,
             mappedBy = "folder"
     )
+    @JsonManagedReference
     private List<File> files;
 
     public Folder() {

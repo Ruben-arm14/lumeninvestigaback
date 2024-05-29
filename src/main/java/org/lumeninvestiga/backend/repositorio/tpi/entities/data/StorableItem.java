@@ -1,6 +1,8 @@
 package org.lumeninvestiga.backend.repositorio.tpi.entities.data;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import org.lumeninvestiga.backend.repositorio.tpi.entities.user.User;
 
@@ -13,6 +15,7 @@ import java.time.LocalDateTime;
 @Table(
         name = "storable_items"
 )
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class StorableItem {
     @Id
     @GeneratedValue(
@@ -25,10 +28,15 @@ public class StorableItem {
             allocationSize = 1
     )
     private Long id;
+    @Column(nullable = false)
     private String name;
+    @Column(nullable = false)
     private Long size;
+    @Column(nullable = false)
     private LocalDateTime createdDate;
-    @ManyToOne
+    @ManyToOne(
+            fetch = FetchType.LAZY
+    )
     @JoinColumn(
             name = "user_id"
     )
