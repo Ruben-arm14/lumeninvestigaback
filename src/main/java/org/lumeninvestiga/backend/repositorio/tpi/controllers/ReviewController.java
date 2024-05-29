@@ -17,7 +17,7 @@ public class ReviewController {
         this.reviewService = reviewService;
     }
 
-    @PostMapping
+    @PostMapping(consumes = "application/json", produces = "application/json")
     public ResponseEntity<?> createReview(@RequestBody Review review) {
         return ResponseEntity.ok(reviewService.saveReview(review));
     }

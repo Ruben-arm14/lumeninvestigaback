@@ -15,17 +15,17 @@ import java.util.Optional;
 
 @Service
 public class FileServiceImpl implements FileService{
-    private final FileRepository FileRepository;
+    private final FileRepository fileRepository;
 
     public FileServiceImpl(FileRepository FileRepository) {
-        this.FileRepository = FileRepository;
+        this.fileRepository = FileRepository;
     }
 
     @Override
     @Transactional
     public Optional<File> saveFile(MultipartFile file) {
         File fileDb = new File();
-        return Optional.of(FileRepository.save(Objects.requireNonNull(
+        return Optional.of(fileRepository.save(Objects.requireNonNull(
                 convertMultipartFileToFile(file, fileDb))));
     }
 
@@ -39,32 +39,36 @@ public class FileServiceImpl implements FileService{
     @Override
     @Transactional(readOnly = true)
     public List<File> getAllFiles() {
-        return FileRepository.findAll();
+        return fileRepository.findAll();
     }
 
     @Override
     @Transactional(readOnly = true)
     public Optional<File> getFileById(Long id) {
-        return FileRepository.findById(id);
+        return fileRepository.findById(id);
+    }
+
+    @Override
+    public Optional<File> getFileByName(String name) {
+        return fileRepository.findByName(name);
     }
 
     @Override
     @Transactional
     public void deleteFileById(Long id) {
-        FileRepository.deleteById(id);
+        fileRepository.deleteById(id);
     }
 
     @Override
     @Transactional(readOnly = true)
     public boolean existFileById(Long id) {
-        return FileRepository.existsById(id);
+        return fileRepository.existsById(id);
     }
 
     private File convertMultipartFileToFile(MultipartFile file, File fileDb) {
         if(!file.isEmpty()) {
             try {
                 fileDb.setName(file.getOriginalFilename());
-                // tener presente:
                 fileDb.setMimeType(file.getContentType());
                 fileDb.setSize(file.getSize());
                 fileDb.setData(file.getBytes());

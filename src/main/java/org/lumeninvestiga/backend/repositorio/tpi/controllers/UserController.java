@@ -21,7 +21,7 @@ public class UserController {
         this.userService = userService;
     }
 
-    @PostMapping
+    @PostMapping(consumes = "application/json", produces = "application/json")
     public ResponseEntity<?> createUser(@Valid @RequestBody User user, BindingResult result) {
         if(result.hasErrors()) {
             return validation(result);

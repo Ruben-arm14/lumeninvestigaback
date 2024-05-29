@@ -11,6 +11,7 @@ public interface FileService {
     Optional<File> saveFileToUser(Long id, MultipartFile multipartFile);
     List<File> getAllFiles();
     Optional<File> getFileById(Long id);
+    Optional<File> getFileByName(String name);
     void deleteFileById(Long id);
     boolean existFileById(Long id);
 }

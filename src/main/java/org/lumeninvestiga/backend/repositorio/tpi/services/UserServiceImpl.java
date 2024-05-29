@@ -4,7 +4,6 @@ import org.lumeninvestiga.backend.repositorio.tpi.entities.user.Role;
 import org.lumeninvestiga.backend.repositorio.tpi.entities.user.User;
 import org.lumeninvestiga.backend.repositorio.tpi.repositories.RoleRepository;
 import org.lumeninvestiga.backend.repositorio.tpi.repositories.UserRepository;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -16,12 +15,11 @@ import java.util.Optional;
 public class UserServiceImpl implements UserService{
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
-    private final PasswordEncoder passwordEncoder;
+//    private final PasswordEncoder passwordEncoder;
 
-    public UserServiceImpl(UserRepository userRepository, RoleRepository roleRepository, PasswordEncoder passwordEncoder) {
+    public UserServiceImpl(UserRepository userRepository, RoleRepository roleRepository) {
         this.userRepository = userRepository;
         this.roleRepository = roleRepository;
-        this.passwordEncoder = passwordEncoder;
     }
 
     @Override
@@ -37,8 +35,7 @@ public class UserServiceImpl implements UserService{
         }
 
         user.setRoles(roles);
-        user.getUserDetail().setPassword(
-                passwordEncoder.encode(user.getUserDetail().getPassword())
+        user.getUserDetail().setPassword(user.getUserDetail().getPassword()
         );
         return Optional.of(userRepository.save(user));
     }

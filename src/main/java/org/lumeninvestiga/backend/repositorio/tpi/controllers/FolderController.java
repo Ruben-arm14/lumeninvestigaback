@@ -18,7 +18,7 @@ public class FolderController {
         this.folderService = folderService;
     }
 
-    @PostMapping
+    @PostMapping(consumes = "application/json", produces = "application/json")
     public ResponseEntity<?> createFile(@RequestBody Folder folder) {
         return ResponseEntity.ok(folderService.saveFolder(folder));
     }

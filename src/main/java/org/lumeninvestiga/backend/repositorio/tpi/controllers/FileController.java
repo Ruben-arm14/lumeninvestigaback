@@ -18,14 +18,23 @@ public class FileController {
         this.fileService = FileService;
     }
 
-    @PostMapping
+    @PostMapping(consumes = "application/json", produces = "application/json")
     public ResponseEntity<?> createFile(@RequestBody MultipartFile item) {
         return ResponseEntity.ok(fileService.saveFile(item));
     }
 
     @GetMapping
-    public ResponseEntity<?> getAllFiles() {
+    public ResponseEntity<?> readAllFiles() {
         return ResponseEntity.status(HttpStatus.OK).body(fileService.getAllFiles());
+    }
+
+    @GetMapping("/{name}")
+    public ResponseEntity<?> readByName(@PathVariable String name) {
+        Optional<File> fileOptional = fileService.getFileByName(name);
+        if(fileOptional.isPresent()) {
+            return ResponseEntity.status(HttpStatus.FOUND).body(fileOptional);
+        }
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
     }
 
     @GetMapping("/{id}")
