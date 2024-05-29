@@ -1,7 +1,6 @@
 package org.lumeninvestiga.backend.repositorio.tpi.services;
 
 import org.lumeninvestiga.backend.repositorio.tpi.entities.data.File;
-import org.lumeninvestiga.backend.repositorio.tpi.entities.data.MIME_TYPE;
 import org.lumeninvestiga.backend.repositorio.tpi.repositories.FileRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -24,15 +23,26 @@ public class FileServiceImpl implements FileService{
     @Override
     @Transactional
     public Optional<File> saveFile(MultipartFile file) {
+        if (file == null || file.isEmpty()) {
+            return Optional.empty();
+        }
         File fileDb = new File();
-        return Optional.of(fileRepository.save(Objects.requireNonNull(
-                convertMultipartFileToFile(file, fileDb))));
+        try {
+            fileDb.setName(file.getOriginalFilename());
+            fileDb.setMimeType(file.getContentType());
+            fileDb.setSize(file.getSize());
+            fileDb.setData(file.getBytes());
+            fileDb.setCreatedDate(LocalDateTime.now());
+            return Optional.of(fileRepository.save(fileDb));
+        } catch (IOException e) {
+            throw new RuntimeException("Error saving file", e);
+        }
     }
 
     //TODO: Continuar después de armar la autenticación.
     @Override
     @Transactional
-    public Optional<File> saveFileToUser(Long id, MultipartFile multipartFile) {
+    public Optional<File> saveFileToUser(Long id, MultipartFile file) {
         return Optional.empty();
     }
 
