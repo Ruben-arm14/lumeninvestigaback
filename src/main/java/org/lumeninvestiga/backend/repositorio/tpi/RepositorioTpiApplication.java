@@ -1,6 +1,5 @@
 package org.lumeninvestiga.backend.repositorio.tpi;
 
-import org.lumeninvestiga.backend.repositorio.tpi.controllers.UserController;
 import org.lumeninvestiga.backend.repositorio.tpi.entities.data.File;
 import org.lumeninvestiga.backend.repositorio.tpi.entities.data.Folder;
 import org.lumeninvestiga.backend.repositorio.tpi.entities.data.MIME_TYPE;
@@ -26,10 +25,13 @@ public class RepositorioTpiApplication {
 	}
 
 	@Bean
-	CommandLineRunner commandLineRunner(UserRepository userRepository, RoleRepository roleRepository,
-										FileRepository fileRepository, FolderRepository folderRepository) {
+	CommandLineRunner commandLineRunner(UserRepository userRepository, FileRepository fileRepository,
+										FolderRepository folderRepository, RoleRepository roleRepository) {
 		Role roleAdmin = new Role("ROLE_ADMIN");
 		Role roleUser = new Role("ROLE_USER");
+
+		roleRepository.save(roleAdmin);
+		roleRepository.save(roleUser);
 
 		User user = new User();
 		User user1 = new User();
@@ -53,15 +55,14 @@ public class RepositorioTpiApplication {
 		userD.setEmailAddress("1234@example.com");
 		userD.setPassword("contraseña");
 
+		userD.setUser(user);
+		user.setUserDetail(userD);
+
 		UserDetail userD1 = new UserDetail();
 		userD1.setName("Juan");
 		userD1.setLastName("Rodriguez");
 		userD1.setEmailAddress("12341234@example.com");
 		userD1.setPassword("nosequeponer");
-
-
-		userD.setUser(user);
-		user.setUserDetail(userD);
 
 		userD1.setUser(user1);
 		user1.setUserDetail(userD1);
@@ -78,15 +79,13 @@ public class RepositorioTpiApplication {
 		user.addReview(review);
 
 		return args -> {
-			roleRepository.save(roleAdmin);
-			roleRepository.save(roleUser);
-			System.out.println("Roles guardados " + roleAdmin.getName() + " y " + roleUser.getName());
 			userRepository.save(user);
 			System.out.println("Usuario guardado " + user.getUserDetail().getName());
-			userRepository.save(user1);
-			System.out.println("Usuario guardado " + user1.getUserDetail().getName());
 			folderRepository.save(folder);
 			fileRepository.save(file);
+
+			userRepository.save(user1);
+			System.out.println("Usuario guardado " + user1.getUserDetail().getName());
 		};
 	}
 
