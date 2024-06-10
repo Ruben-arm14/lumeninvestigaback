@@ -24,12 +24,21 @@ public class ArticleDetail {
     @Column(nullable = false)
     private ODS_GOALS ODS;
     @Column(nullable = false)
+    private String title;
+    @Column(nullable = false)
+    private String author;
+    @Column(nullable = false)
+    private String resume;
+    @Column(nullable = false)
     private Set<String> keywords;
 
     public ArticleDetail() {
         this.area = "";
         this.subArea = "";
         this.period = "";
+        this.title = "";
+        this.author = "";
+        this.resume = "";
         this.keywords = new HashSet<>();
     }
 
@@ -67,6 +76,30 @@ public class ArticleDetail {
 
     public void setODS(ODS_GOALS ODS) {
         this.ODS = ODS;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public String getAuthor() {
+        return author;
+    }
+
+    public void setAuthor(String author) {
+        this.author = author;
+    }
+
+    public String getResume() {
+        return resume;
+    }
+
+    public void setResume(String resume) {
+        this.resume = resume;
     }
 
     public Set<String> getKeywords() {
