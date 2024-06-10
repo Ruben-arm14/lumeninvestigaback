@@ -9,6 +9,7 @@ import jakarta.persistence.*;
         name = "files"
 )
 public class File extends StorableItem {
+
     @JsonIgnore
     @Column(nullable = false, updatable = false, columnDefinition = "LONGBLOB")
     private byte[] data;

@@ -11,6 +11,7 @@ import java.util.List;
         name = "folders"
 )
 public class Folder extends StorableItem {
+
     @Column(nullable = false)
     private boolean shared;
     @OneToMany(

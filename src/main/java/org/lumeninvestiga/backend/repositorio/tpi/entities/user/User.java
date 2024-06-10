@@ -148,13 +148,11 @@ public class User {
     public void addReview(Review review) {
         this.reviews.add(review);
         review.setUser(this);
-
     }
 
     public void removeReview(Review review) {
         this.reviews.remove(review);
         review.setUser(null);
-
     }
 
     public void addStorableItem(StorableItem storableItem) {

@@ -10,6 +10,15 @@ import java.util.List;
         name = "professors"
 )
 public class Professor extends User{
+    @OneToOne(
+            cascade = {
+                    CascadeType.PERSIST,
+                    CascadeType.REMOVE
+            }
+    )
+    @JoinColumn(name="user_id")
+    private User user;
+
     @ManyToMany
     @JoinTable(
             name = "professor_course",

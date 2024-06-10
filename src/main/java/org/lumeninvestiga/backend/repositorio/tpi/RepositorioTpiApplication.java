@@ -29,9 +29,13 @@ public class RepositorioTpiApplication {
 										FolderRepository folderRepository, RoleRepository roleRepository) {
 		Role roleAdmin = new Role("ROLE_ADMIN");
 		Role roleUser = new Role("ROLE_USER");
+		Role roleStudent = new Role("ROLE_STUDENT");
+		Role roleAdvisor = new Role("ROLE_ADVISOR");
 
 		roleRepository.save(roleAdmin);
 		roleRepository.save(roleUser);
+		roleRepository.save(roleStudent);
+		roleRepository.save(roleAdvisor);
 
 		User user = new User();
 		User user1 = new User();

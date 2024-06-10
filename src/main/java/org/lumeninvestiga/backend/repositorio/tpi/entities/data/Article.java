@@ -10,6 +10,7 @@ import jakarta.persistence.Table;
         name = "articles"
 )
 public class Article extends File{
+
     @OneToOne(
             targetEntity = ArticleDetail.class,
             cascade = {
