@@ -30,6 +30,7 @@ public class StorableItem {
     @Column(nullable = false)
     private Long size;
     @Column(name="created_date",  nullable = false)
+    @Temporal(TemporalType.TIMESTAMP)
     private LocalDateTime createdDate;
 
     @ManyToOne(targetEntity = User.class)

@@ -3,6 +3,8 @@ package org.lumeninvestiga.backend.repositorio.tpi.entities.user;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 
+import java.time.LocalDateTime;
+
 @Entity
 @Table(
         name = "reviews"
@@ -17,12 +19,16 @@ public class Review {
     private boolean liked;
     @Column(nullable = false)
     private String comment;
+    @Column(name="created_date",  nullable = false)
+    @Temporal(TemporalType.TIMESTAMP)
+    private LocalDateTime createdDate;
 
     @ManyToOne(targetEntity = User.class)
     @JsonBackReference
     private User user;
 
     public Review() {
+        this.createdDate = LocalDateTime.now();
         this.liked = false;
         this.comment = "";
     }

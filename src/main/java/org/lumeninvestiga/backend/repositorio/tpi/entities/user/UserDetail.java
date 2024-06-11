@@ -17,6 +17,8 @@ public class UserDetail {
     private String name;
     @Column(name = "last_name", nullable = false)
     private String lastName;
+    @Column(nullable = false)
+    private String code;
     @Column(name="email_address", nullable = false, unique = true)
     private String emailAddress;
     @Column(nullable = true)
@@ -28,6 +30,7 @@ public class UserDetail {
     public UserDetail() {
         this.name = "";
         this.lastName = "";
+        this.code = "";
         this.emailAddress = "";
     }
 
@@ -45,6 +48,14 @@ public class UserDetail {
 
     public String getLastName() {
         return lastName;
+    }
+
+    public String getCode() {
+        return code;
+    }
+
+    public void setCode(String code) {
+        this.code = code;
     }
 
     public void setLastName(String lastName) {

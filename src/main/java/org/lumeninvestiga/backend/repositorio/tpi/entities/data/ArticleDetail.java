@@ -22,11 +22,14 @@ public class ArticleDetail {
     @Column(nullable = false)
     private String period;
     @Column(nullable = false)
+    //@Enumerated(EnumType.STRING)
     private ODS_GOALS ODS;
     @Column(nullable = false)
     private String title;
     @Column(nullable = false)
     private String author;
+    @Column(nullable = false)
+    private String advisor;
     @Column(nullable = false)
     private String resume;
     @Column(nullable = false)
@@ -38,6 +41,7 @@ public class ArticleDetail {
         this.period = "";
         this.title = "";
         this.author = "";
+        this.advisor = "";
         this.resume = "";
         this.keywords = new HashSet<>();
     }
@@ -92,6 +96,14 @@ public class ArticleDetail {
 
     public void setAuthor(String author) {
         this.author = author;
+    }
+
+    public String getAdvisor() {
+        return advisor;
+    }
+
+    public void setAdvisor(String advisor) {
+        this.advisor = advisor;
     }
 
     public String getResume() {
