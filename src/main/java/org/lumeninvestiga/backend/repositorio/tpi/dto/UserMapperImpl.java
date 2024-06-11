@@ -14,8 +14,8 @@ public class UserMapperImpl implements UserMapper{
     }
 
     @Override
-    public UserProfileDTO toUserProfileDTO(User user) {
-        return new UserProfileDTO(
+    public UserDTO toUserProfileDTO(User user) {
+        return new UserDTO(
                 user.getUserDetail().getName(),
                 user.getUserDetail().getLastName(),
                 user.getUserDetail().getEmailAddress()

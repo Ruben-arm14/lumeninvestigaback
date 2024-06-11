@@ -2,12 +2,9 @@ package org.lumeninvestiga.backend.repositorio.tpi.dto;
 
 import jakarta.validation.constraints.NotBlank;
 
-public record UserProfileDTO(
-        @NotBlank
+public record UserDTO(
         String name,
-        @NotBlank
         String lastname,
-        @NotBlank
         String emailAddress
         ) {
 }

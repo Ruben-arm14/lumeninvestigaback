@@ -6,6 +6,6 @@ import org.mapstruct.Mapper;
 @Mapper
 public interface UserMapper {
     UserRegistrationRequest toUserRegisterRequest(User user);
-    UserProfileDTO toUserProfileDTO(User user);
+    UserDTO toUserProfileDTO(User user);
 
 }
