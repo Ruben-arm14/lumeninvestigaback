@@ -1,6 +1,6 @@
-package org.lumeninvestiga.backend.repositorio.tpi.dto;
+package org.lumeninvestiga.backend.repositorio.tpi.dto.response;
 
-public record ArticleDTO(
+public record ArticleResponse(
         String title,
         String author,
         String resume,

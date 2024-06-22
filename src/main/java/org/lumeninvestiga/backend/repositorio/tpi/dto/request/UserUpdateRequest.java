@@ -1,4 +1,4 @@
-package org.lumeninvestiga.backend.repositorio.tpi.dto;
+package org.lumeninvestiga.backend.repositorio.tpi.dto.request;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
