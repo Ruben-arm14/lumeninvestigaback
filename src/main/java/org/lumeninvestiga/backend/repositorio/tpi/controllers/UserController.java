@@ -1,9 +1,13 @@
 package org.lumeninvestiga.backend.repositorio.tpi.controllers;
 
 import jakarta.validation.Valid;
+import org.lumeninvestiga.backend.repositorio.tpi.dto.request.UserRegistrationRequest;
+import org.lumeninvestiga.backend.repositorio.tpi.dto.request.UserUpdateRequest;
 import org.lumeninvestiga.backend.repositorio.tpi.entities.user.User;
 import org.lumeninvestiga.backend.repositorio.tpi.entities.user.UserDetail;
 import org.lumeninvestiga.backend.repositorio.tpi.services.UserService;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
@@ -23,16 +27,16 @@ public class UserController {
     }
 
     @PostMapping(consumes = "application/json", produces = "application/json")
-    public ResponseEntity<?> createUser(@Valid @RequestBody User user, BindingResult result) {
+    public ResponseEntity<?> createUser(@Valid @RequestBody UserRegistrationRequest request, BindingResult result) {
         if(result.hasErrors()) {
             return validation(result);
         }
-        return ResponseEntity.ok(userService.saveUser(user));
+        return ResponseEntity.ok(userService.saveUser(request));
     }
 
     @GetMapping
-    public ResponseEntity<?> readAllUsers() {
-        return ResponseEntity.status(HttpStatus.OK).body(userService.getAllUsers());
+    public ResponseEntity<?> readAllUsers(@PageableDefault Pageable pageable) {
+        return ResponseEntity.status(HttpStatus.OK).body(userService.getAllUsers(pageable));
     }
 
     @GetMapping("/{id}")
@@ -43,24 +47,15 @@ public class UserController {
 
     //Solo se puede modificar el nombre, apellido y correo
     @PutMapping("/{id}")
-    public ResponseEntity<?> updateUserById(@PathVariable Long id, @RequestBody UserDetail userDetail) {
-        Optional<User> userOptional = userService.getUserById(id);
-        userOptional.ifPresent(userDb -> {
-            userDb.getUserDetail().setName(userDetail.getName());
-            userDb.getUserDetail().setLastName(userDetail.getLastName());
-            userDb.getUserDetail().setEmailAddress(userDetail.getEmailAddress());
-        });
-        return ResponseEntity.status(HttpStatus.CREATED).body(userService.saveUser(userOptional.get()));
+    public ResponseEntity<?> updateUserById(@PathVariable Long id, @RequestBody UserUpdateRequest request) {
+        userService.updateUser(id, request);
+        return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteUserById(@PathVariable Long id){
-        Optional<User> userOptional = userService.getUserById(id);
-        if(userOptional.isPresent()) {
-            userService.deleteUserById(id);
-            return ResponseEntity.status(HttpStatus.ACCEPTED).build();
-        }
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        userService.deleteUserById(id);
+        return ResponseEntity.status(HttpStatus.ACCEPTED).build();
     }
 
     private ResponseEntity<?> validation(BindingResult result) {

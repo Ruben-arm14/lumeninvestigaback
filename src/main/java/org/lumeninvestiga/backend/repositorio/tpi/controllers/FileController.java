@@ -2,6 +2,8 @@ package org.lumeninvestiga.backend.repositorio.tpi.controllers;
 
 import org.lumeninvestiga.backend.repositorio.tpi.entities.data.File;
 import org.lumeninvestiga.backend.repositorio.tpi.services.FileService;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -28,8 +30,8 @@ public class FileController {
     }
 
     @GetMapping
-    public ResponseEntity<?> readAllFiles() {
-        return ResponseEntity.status(HttpStatus.OK).body(fileService.getAllFiles());
+    public ResponseEntity<?> readAllFiles(@PageableDefault Pageable pageable) {
+        return ResponseEntity.status(HttpStatus.OK).body(fileService.getAllFiles(pageable));
     }
 
     @GetMapping("by/{name}")
