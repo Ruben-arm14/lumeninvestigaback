@@ -1,15 +1,14 @@
 package org.lumeninvestiga.backend.repositorio.tpi.entities.data;
 
-import jakarta.persistence.CascadeType;
-import jakarta.persistence.Entity;
-import jakarta.persistence.OneToOne;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 
 @Entity
 @Table(
         name = "articles"
 )
 public class Article extends File{
+    @Column(name = "like_count", nullable = false)
+    private Integer likeCount;
 
     @OneToOne(
             targetEntity = ArticleDetail.class,
@@ -20,4 +19,19 @@ public class Article extends File{
             }
     )
     private ArticleDetail articleDetail;
+
+    public Article() {
+        this.likeCount = 0;
+        this.articleDetail = new ArticleDetail();
+    }
+
+    public void incrementLikeCount() {
+        this.likeCount++;
+    }
+
+    public void decrementLikeCount() {
+        if(this.likeCount > 0) {
+            this.likeCount--;
+        }
+    }
 }

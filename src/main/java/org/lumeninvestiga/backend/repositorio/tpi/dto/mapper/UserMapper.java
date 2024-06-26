@@ -9,5 +9,4 @@ import org.mapstruct.Mapper;
 public interface UserMapper {
     UserRegistrationRequest toUserRegisterRequest(User user);
     UserResponse toUserResponse(User user);
-
 }

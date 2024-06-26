@@ -15,8 +15,8 @@ public class Review {
             strategy = GenerationType.IDENTITY
     )
     private Long id;
-    @Column(nullable = false)
-    private boolean liked;
+    @Column(name = "like_count", nullable = false)
+    private Integer likeCount;
     @Column(nullable = false)
     private String comment;
     @Column(name="created_date",  nullable = false)
@@ -29,7 +29,7 @@ public class Review {
 
     public Review() {
         this.createdDate = LocalDateTime.now();
-        this.liked = false;
+        this.likeCount = 0;
         this.comment = "";
     }
 
@@ -37,12 +37,12 @@ public class Review {
         return id;
     }
 
-    public boolean isLiked() {
-        return liked;
+    public Integer getLikeCount() {
+        return likeCount;
     }
 
-    public void setLiked(boolean liked) {
-        this.liked = liked;
+    public void setLikeCount(Integer likeCount) {
+        this.likeCount = likeCount;
     }
 
     public String getComment() {
@@ -59,5 +59,15 @@ public class Review {
 
     public void setUser(User user) {
         this.user = user;
+    }
+
+    public void incrementLikeCount() {
+        this.likeCount++;
+    }
+
+    public void decrementLikeCount() {
+        if(this.likeCount > 0) {
+            this.likeCount--;
+        }
     }
 }
