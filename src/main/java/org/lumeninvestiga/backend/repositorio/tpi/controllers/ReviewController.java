@@ -1,7 +1,11 @@
 package org.lumeninvestiga.backend.repositorio.tpi.controllers;
 
+import org.lumeninvestiga.backend.repositorio.tpi.dto.request.ReviewUpdateRequest;
+import org.lumeninvestiga.backend.repositorio.tpi.dto.response.ReviewResponse;
 import org.lumeninvestiga.backend.repositorio.tpi.entities.user.Review;
 import org.lumeninvestiga.backend.repositorio.tpi.services.ReviewService;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -23,8 +27,8 @@ public class ReviewController {
     }
 
     @GetMapping
-    public ResponseEntity<?> readReviews() {
-        return ResponseEntity.status(HttpStatus.OK).body(reviewService.getAllReviews());
+    public ResponseEntity<?> readReviews(@PageableDefault Pageable pageable) {
+        return ResponseEntity.status(HttpStatus.OK).body(reviewService.getAllReviews(pageable));
     }
 
     @GetMapping("/{id}")
@@ -34,22 +38,14 @@ public class ReviewController {
 
     //Solo se puede modificar el comentario y isLiked
     @PutMapping("/{id}")
-    public ResponseEntity<?> updateReviewById(@PathVariable Long id, @RequestBody Review review) {
-        Optional<Review> reviewOptional = reviewService.getReviewById(id);
-        reviewOptional.ifPresent(reviewDb -> {
-            reviewDb.setComment(review.getComment());
-            reviewDb.setLiked(review.isLiked());            
-        });
-        return ResponseEntity.status(HttpStatus.CREATED).body(reviewService.saveReview(reviewOptional.get()));
+    public ResponseEntity<?> updateReviewById(@PathVariable Long id, @RequestBody ReviewUpdateRequest request) {
+        reviewService.updateReviewComment(id, request);
+        return ResponseEntity.status(HttpStatus.ACCEPTED).build();
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteReviewById(@PathVariable Long id){
-        Optional<Review> reviewOptional = reviewService.getReviewById(id);
-        if(reviewOptional.isPresent()) {
-            reviewService.deleteReviewById(id);
-            return ResponseEntity.status(HttpStatus.ACCEPTED).build();
-        }
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        reviewService.deleteReviewById(id);
+        return ResponseEntity.status(HttpStatus.ACCEPTED).build();
     }
 }
