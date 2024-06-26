@@ -50,8 +50,8 @@ public class FileController {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
     }
 
-    //Solo se puede modificar el nombre
-    @PutMapping("/{id}")
+    //Solo se puede modificar el nombre, aún falta arreglar
+    @PutMapping("/{name}")
     public ResponseEntity<?> updateFileById(@PathVariable Long id, @RequestParam("name") File file) {
         Optional<File> fileOptional = fileService.getFileById(id);
         if (fileOptional.isPresent()) {

@@ -1,4 +1,4 @@
-package org.lumeninvestiga.backend.repositorio.tpi.dto;
+package org.lumeninvestiga.backend.repositorio.tpi.dto.mapper;
 
 import org.lumeninvestiga.backend.repositorio.tpi.dto.request.UserRegistrationRequest;
 import org.lumeninvestiga.backend.repositorio.tpi.dto.response.UserResponse;
