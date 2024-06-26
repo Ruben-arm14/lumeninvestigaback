@@ -10,7 +10,7 @@ import java.util.Optional;
 public interface FileService {
     Optional<File> saveFile(MultipartFile multipartFile);
     Optional<File> saveFileToUser(Long id, MultipartFile multipartFile);
-    List<File> getAllFiles(Pageable pageable);
+    List<File> getAllFiles();
     Optional<File> getFileById(Long id);
     Optional<File> getFileByName(String name);
     void deleteFileById(Long id);

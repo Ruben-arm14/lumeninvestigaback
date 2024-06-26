@@ -31,7 +31,7 @@ public class FileController {
 
     @GetMapping
     public ResponseEntity<?> readAllFiles(@PageableDefault Pageable pageable) {
-        return ResponseEntity.status(HttpStatus.OK).body(fileService.getAllFiles(pageable));
+        return ResponseEntity.status(HttpStatus.OK).body(fileService.getAllFiles());
     }
 
     @GetMapping("by/{name}")

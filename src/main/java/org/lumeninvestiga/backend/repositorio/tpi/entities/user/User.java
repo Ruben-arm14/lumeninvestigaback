@@ -87,6 +87,7 @@ public class User {
     private boolean admin;
 
     public User() {
+        this.userDetail = new UserDetail();
         this.enabled = true;
         this.reviews = new ArrayList<>();
         this.storableItems = new ArrayList<>();

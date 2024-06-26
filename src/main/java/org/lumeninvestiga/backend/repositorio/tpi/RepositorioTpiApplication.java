@@ -12,10 +12,12 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ComponentScan;
 
 import java.security.SecureRandom;
 
 @SpringBootApplication
+
 public class RepositorioTpiApplication {
 	private static final int MIN_PDF_SIZE = 1024; // 1KB
 	private static final int MAX_PDF_SIZE = 10 * 1024 * 1024; // 10MB
@@ -55,6 +57,7 @@ public class RepositorioTpiApplication {
 
 		UserDetail userD = new UserDetail();
 		userD.setName("Pedro");
+		userD.setCode("20114234");
 		userD.setLastName("Sanchez");
 		userD.setEmailAddress("1234@example.com");
 		userD.setPassword("contraseña");
@@ -65,6 +68,7 @@ public class RepositorioTpiApplication {
 		UserDetail userD1 = new UserDetail();
 		userD1.setName("Juan");
 		userD1.setLastName("Rodriguez");
+		userD1.setCode("20223412");
 		userD1.setEmailAddress("12341234@example.com");
 		userD1.setPassword("nosequeponer");
 
@@ -77,7 +81,6 @@ public class RepositorioTpiApplication {
 		user1.addRole(roleUser);
 
 		Review review = new Review();
-		review.setLiked(true);
 		review.setComment("Muy buen trabajo, saludos");
 		review.setUser(user);
 		user.addReview(review);

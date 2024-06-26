@@ -9,7 +9,7 @@ import java.util.Optional;
 public interface FolderService {
     Optional<Folder> saveFolder(Folder folder);
     Optional<Folder> saveFolderToUser(Long id, Folder folder);
-    List<Folder> getAllFolders(Pageable pageable);
+    List<Folder> getAllFolders();
     Optional<Folder> getFolderById(Long id);
     void deleteFolderById(Long id);
     boolean existFolderById(Long id);

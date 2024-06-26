@@ -28,7 +28,7 @@ public class ReviewController {
 
     @GetMapping
     public ResponseEntity<?> readReviews(@PageableDefault Pageable pageable) {
-        return ResponseEntity.status(HttpStatus.OK).body(reviewService.getAllReviews(pageable));
+        return ResponseEntity.status(HttpStatus.OK).body(reviewService.getAllReviews());
     }
 
     @GetMapping("/{id}")
@@ -39,7 +39,7 @@ public class ReviewController {
     //Solo se puede modificar el comentario y isLiked
     @PutMapping("/{id}")
     public ResponseEntity<?> updateReviewById(@PathVariable Long id, @RequestBody ReviewUpdateRequest request) {
-        reviewService.updateReviewComment(id, request);
+        //reviewService.updateReviewComment(id, request);
         return ResponseEntity.status(HttpStatus.ACCEPTED).build();
     }
 

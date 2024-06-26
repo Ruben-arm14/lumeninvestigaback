@@ -9,6 +9,6 @@ public record UserUpdateRequest(
         @NotBlank(message = "Last name cannot be blank")
         String lastName,
         @Email(message = "Invalid email address")
-        String email
+        String emailAddress
 ) {
 }
