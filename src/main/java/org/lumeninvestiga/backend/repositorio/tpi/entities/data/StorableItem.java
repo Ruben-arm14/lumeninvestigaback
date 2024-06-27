@@ -43,6 +43,10 @@ public class StorableItem {
         this.createdDate = LocalDateTime.now();
     }
 
+    public void setId(Long id) {
+        this.id = id;
+    }
+
     public Long getId() {
         return id;
     }

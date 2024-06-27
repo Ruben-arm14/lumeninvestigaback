@@ -1,5 +1,6 @@
 package org.lumeninvestiga.backend.repositorio.tpi;
 
+import org.lumeninvestiga.backend.repositorio.tpi.entities.data.ArticleDetail;
 import org.lumeninvestiga.backend.repositorio.tpi.entities.data.File;
 import org.lumeninvestiga.backend.repositorio.tpi.entities.data.Folder;
 import org.lumeninvestiga.backend.repositorio.tpi.entities.data.MIME_TYPE;
@@ -8,13 +9,16 @@ import org.lumeninvestiga.backend.repositorio.tpi.entities.user.Role;
 import org.lumeninvestiga.backend.repositorio.tpi.entities.user.User;
 import org.lumeninvestiga.backend.repositorio.tpi.entities.user.UserDetail;
 import org.lumeninvestiga.backend.repositorio.tpi.repositories.*;
+import org.lumeninvestiga.backend.repositorio.tpi.utils.PDFAcademicExtractor;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 
+import java.io.IOException;
 import java.security.SecureRandom;
+import java.util.List;
 
 @SpringBootApplication
 
@@ -28,7 +32,8 @@ public class RepositorioTpiApplication {
 
 	@Bean
 	CommandLineRunner commandLineRunner(UserRepository userRepository, FileRepository fileRepository,
-										FolderRepository folderRepository, RoleRepository roleRepository) {
+										FolderRepository folderRepository, RoleRepository roleRepository,
+										PDFAcademicExtractor extractor) throws IOException {
 		Role roleAdmin = new Role("ROLE_ADMIN");
 		Role roleUser = new Role("ROLE_USER");
 		Role roleStudent = new Role("ROLE_STUDENT");
@@ -85,14 +90,22 @@ public class RepositorioTpiApplication {
 		review.setUser(user);
 		user.addReview(review);
 
-		return args -> {
-			userRepository.save(user);
-			System.out.println("Usuario guardado " + user.getUserDetail().getName());
-			folderRepository.save(folder);
-			fileRepository.save(file);
 
-			userRepository.save(user1);
-			System.out.println("Usuario guardado " + user1.getUserDetail().getName());
+
+		return args -> {
+//			userRepository.save(user);
+//			System.out.println("Usuario guardado " + user.getUserDetail().getName());
+//			folderRepository.save(folder);
+//			fileRepository.save(file);
+//
+//			userRepository.save(user1);
+//			System.out.println("Usuario guardado " + user1.getUserDetail().getName());
+			// Creando un articulo (Experimental)
+			String path = "C:/Users/miche/OneDrive/Escritorio/Investigación_J_Linares_20184082v3.pdf";
+			String text = extractor.readArticle(path);
+			List<String> list = extractor.receivingValues(text);
+			list.forEach(System.out::println);
+
 		};
 	}
 

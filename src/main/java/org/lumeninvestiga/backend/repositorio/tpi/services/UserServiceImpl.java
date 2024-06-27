@@ -4,9 +4,7 @@ import org.lumeninvestiga.backend.repositorio.tpi.dto.mapper.UserMapper;
 import org.lumeninvestiga.backend.repositorio.tpi.dto.request.UserRegistrationRequest;
 import org.lumeninvestiga.backend.repositorio.tpi.dto.request.UserUpdateRequest;
 import org.lumeninvestiga.backend.repositorio.tpi.dto.response.UserResponse;
-import org.lumeninvestiga.backend.repositorio.tpi.entities.user.Role;
 import org.lumeninvestiga.backend.repositorio.tpi.entities.user.User;
-import org.lumeninvestiga.backend.repositorio.tpi.repositories.RoleRepository;
 import org.lumeninvestiga.backend.repositorio.tpi.repositories.UserRepository;
 import org.lumeninvestiga.backend.repositorio.tpi.utils.Utility;
 import org.springframework.data.domain.PageRequest;
@@ -15,7 +13,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 

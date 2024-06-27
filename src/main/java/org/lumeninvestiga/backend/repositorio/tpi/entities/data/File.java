@@ -19,6 +19,10 @@ public class File extends StorableItem {
     @JsonBackReference
     private Folder folder;
 
+    public File() {
+        super();
+    }
+
     public byte[] getData() {
         return data;
     }

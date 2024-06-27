@@ -1,5 +1,6 @@
 package org.lumeninvestiga.backend.repositorio.tpi.controllers;
 
+import org.lumeninvestiga.backend.repositorio.tpi.dto.request.ReviewPostRequest;
 import org.lumeninvestiga.backend.repositorio.tpi.dto.request.ReviewUpdateRequest;
 import org.lumeninvestiga.backend.repositorio.tpi.dto.response.ReviewResponse;
 import org.lumeninvestiga.backend.repositorio.tpi.entities.user.Review;
@@ -22,13 +23,13 @@ public class ReviewController {
     }
 
     @PostMapping(consumes = "application/json", produces = "application/json")
-    public ResponseEntity<?> createReview(@RequestBody Review review) {
-        return ResponseEntity.ok(reviewService.saveReview(review));
+    public ResponseEntity<?> createReview(@RequestBody ReviewPostRequest request) {
+        return ResponseEntity.ok(reviewService.saveReview(request));
     }
 
     @GetMapping
     public ResponseEntity<?> readReviews(@PageableDefault Pageable pageable) {
-        return ResponseEntity.status(HttpStatus.OK).body(reviewService.getAllReviews());
+        return ResponseEntity.status(HttpStatus.OK).body(reviewService.getAllReviews(pageable));
     }
 
     @GetMapping("/{id}")
@@ -39,7 +40,7 @@ public class ReviewController {
     //Solo se puede modificar el comentario y isLiked
     @PutMapping("/{id}")
     public ResponseEntity<?> updateReviewById(@PathVariable Long id, @RequestBody ReviewUpdateRequest request) {
-        //reviewService.updateReviewComment(id, request);
+        reviewService.updateReviewComment(id, request);
         return ResponseEntity.status(HttpStatus.ACCEPTED).build();
     }
 

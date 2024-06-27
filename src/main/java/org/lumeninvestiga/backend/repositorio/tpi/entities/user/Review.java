@@ -2,6 +2,7 @@ package org.lumeninvestiga.backend.repositorio.tpi.entities.user;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
+import org.lumeninvestiga.backend.repositorio.tpi.entities.data.Article;
 
 import java.time.LocalDateTime;
 
@@ -26,6 +27,9 @@ public class Review {
     @ManyToOne(targetEntity = User.class)
     @JsonBackReference
     private User user;
+
+    @ManyToOne(targetEntity = Article.class)
+    private Article article;
 
     public Review() {
         this.createdDate = LocalDateTime.now();
@@ -59,6 +63,14 @@ public class Review {
 
     public void setUser(User user) {
         this.user = user;
+    }
+
+    public Article getArticle() {
+        return article;
+    }
+
+    public void setArticle(Article article) {
+        this.article = article;
     }
 
     public void incrementLikeCount() {
