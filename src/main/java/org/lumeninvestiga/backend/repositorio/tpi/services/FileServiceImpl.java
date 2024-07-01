@@ -1,11 +1,9 @@
 package org.lumeninvestiga.backend.repositorio.tpi.services;
 
+
 import org.lumeninvestiga.backend.repositorio.tpi.dto.mapper.FileMapper;
-import org.lumeninvestiga.backend.repositorio.tpi.dto.mapper.UserMapper;
 import org.lumeninvestiga.backend.repositorio.tpi.dto.response.FileResponse;
-import org.lumeninvestiga.backend.repositorio.tpi.entities.data.Article;
 import org.lumeninvestiga.backend.repositorio.tpi.entities.data.File;
-import org.lumeninvestiga.backend.repositorio.tpi.entities.user.User;
 import org.lumeninvestiga.backend.repositorio.tpi.repositories.FileRepository;
 import org.lumeninvestiga.backend.repositorio.tpi.utils.Utility;
 import org.springframework.data.domain.PageRequest;
@@ -17,7 +15,6 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 
 @Service
