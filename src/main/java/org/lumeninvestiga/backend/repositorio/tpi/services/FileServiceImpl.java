@@ -1,7 +1,15 @@
 package org.lumeninvestiga.backend.repositorio.tpi.services;
 
+import org.lumeninvestiga.backend.repositorio.tpi.dto.mapper.FileMapper;
+import org.lumeninvestiga.backend.repositorio.tpi.dto.mapper.UserMapper;
+import org.lumeninvestiga.backend.repositorio.tpi.dto.response.FileResponse;
+import org.lumeninvestiga.backend.repositorio.tpi.entities.data.Article;
 import org.lumeninvestiga.backend.repositorio.tpi.entities.data.File;
+import org.lumeninvestiga.backend.repositorio.tpi.entities.user.User;
 import org.lumeninvestiga.backend.repositorio.tpi.repositories.FileRepository;
+import org.lumeninvestiga.backend.repositorio.tpi.utils.Utility;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -22,51 +30,72 @@ public class FileServiceImpl implements FileService{
 
     @Override
     @Transactional
-    public Optional<File> saveFile(MultipartFile file) {
+    public Optional<FileResponse> saveFile(MultipartFile file) {
         if (file == null || file.isEmpty()) {
-            return Optional.empty();
+            // TODO: INVALID_RESOURCE_EXCEPTION
+            throw new RuntimeException();
         }
         File fileDb = new File();
+        // TODO: **Se confirmó el acceso del Article con atributos super.**
         try {
             fileDb.setName(file.getOriginalFilename());
             fileDb.setMimeType(file.getContentType());
             fileDb.setSize(file.getSize());
             fileDb.setData(file.getBytes());
             fileDb.setCreatedDate(LocalDateTime.now());
-            return Optional.of(fileRepository.save(fileDb));
+            fileRepository.save(fileDb);
+            return Optional.of(FileMapper.INSTANCE.toFileResponse(fileDb));
         } catch (IOException e) {
-            throw new RuntimeException("Error saving file", e);
+            // TODO: SAVING_ERROR EXCEPTION
+            throw new RuntimeException();
         }
     }
 
     //TODO: Continuar después de armar la autenticación.
     @Override
     @Transactional
-    public Optional<File> saveFileToUser(Long id, MultipartFile file) {
+    public Optional<FileResponse> saveFileToUser(Long id, MultipartFile file) {
         return Optional.empty();
     }
 
     @Override
     @Transactional(readOnly = true)
-    public List<File> getAllFiles() {
-        return fileRepository.findAll();
+    public List<FileResponse> getAllFiles(Pageable pageable) {
+        int page = Utility.getCurrentPage(pageable);
+        return fileRepository.findAll(PageRequest.of(page, pageable.getPageSize())).stream()
+                .map(FileMapper.INSTANCE::toFileResponse)
+                .toList();
     }
 
     @Override
     @Transactional(readOnly = true)
-    public Optional<File> getFileById(Long id) {
-        return fileRepository.findById(id);
+    public Optional<FileResponse> getFileById(Long id) {
+        Optional<File> fileOptional = fileRepository.findById(id);
+        if(fileOptional.isEmpty()) {
+            //TODO: NOTFOUND_RESOURCE_EXCEPTION
+            throw new RuntimeException();
+        }
+        return Optional.of(FileMapper.INSTANCE.toFileResponse(fileOptional.get()));
     }
 
     @Override
-    public Optional<File> getFileByName(String name) {
-        return fileRepository.findByName(name);
+    @Transactional(readOnly = true)
+    public Optional<FileResponse> getFileByName(String name) {
+        //TODO: Verificar si se puede buscar por nombre desde File.
+        Optional<File> fileOptional = fileRepository.findByName(name);
+        if(fileOptional.isEmpty()) {
+            //TODO: NOTFOUND_RESOURCE_EXCEPTION
+            throw new RuntimeException();
+        }
+        return Optional.of(FileMapper.INSTANCE.toFileResponse(fileOptional.get()));
     }
 
     @Override
     @Transactional
     public void deleteFileById(Long id) {
-        fileRepository.deleteById(id);
+        if(existFileById(id)) {
+            fileRepository.deleteById(id);
+        }
     }
 
     @Override
