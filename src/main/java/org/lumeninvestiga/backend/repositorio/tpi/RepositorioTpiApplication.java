@@ -32,8 +32,7 @@ public class RepositorioTpiApplication {
 
 	@Bean
 	CommandLineRunner commandLineRunner(UserRepository userRepository, FileRepository fileRepository,
-										FolderRepository folderRepository, RoleRepository roleRepository,
-										PDFAcademicExtractor extractor) throws IOException {
+										FolderRepository folderRepository, RoleRepository roleRepository) throws IOException {
 		Role roleAdmin = new Role("ROLE_ADMIN");
 		Role roleUser = new Role("ROLE_USER");
 		Role roleStudent = new Role("ROLE_STUDENT");
@@ -93,19 +92,22 @@ public class RepositorioTpiApplication {
 
 
 		return args -> {
-//			userRepository.save(user);
-//			System.out.println("Usuario guardado " + user.getUserDetail().getName());
-//			folderRepository.save(folder);
-//			fileRepository.save(file);
-//
-//			userRepository.save(user1);
-//			System.out.println("Usuario guardado " + user1.getUserDetail().getName());
-			// Creando un articulo (Experimental)
-			String path = "C:/Users/miche/OneDrive/Escritorio/Investigación_J_Linares_20184082v3.pdf";
-			String text = extractor.readArticle(path);
-			List<String> list = extractor.receivingValues(text);
-			list.forEach(System.out::println);
+			userRepository.save(user);
+			System.out.println("Usuario guardado " + user.getUserDetail().getName());
+			folderRepository.save(folder);
+			fileRepository.save(file);
 
+			userRepository.save(user1);
+			System.out.println("Usuario guardado " + user1.getUserDetail().getName());
+
+			// Subiendo un articulo (Experimental)
+
+//			PDFAcademicExtractor extractor = new PDFAcademicExtractor();
+//
+//			String path = "C:/Users/josed/OneDrive/Escritorio/Investigación_J_Linares_20184082v3.pdf";
+//
+//			List<String> list = extractor.readArticleByPath(path);
+//			list.forEach(System.out::println);
 		};
 	}
 

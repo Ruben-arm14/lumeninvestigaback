@@ -14,6 +14,10 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 @Component
 public class PDFAcademicExtractor {
+
+    public PDFAcademicExtractor() {
+    }
+
     private static String extractData(String text, String regex) {
         Pattern pattern = Pattern.compile(regex, Pattern.CASE_INSENSITIVE | Pattern.DOTALL);
         Matcher matcher = pattern.matcher(text);
@@ -22,12 +26,8 @@ public class PDFAcademicExtractor {
         }
         return "No encontrado";
     }
-    public List<String> extractValues(byte[] datos) throws IOException {
-        String text = readArticle(datos);
-        return receivingValues(text);
-    }
     //Segundo
-    public List<String> receivingValues(String text) {
+    private List<String> receivingValues(String text) {
         String title, author, summary, keywords;
 
         // Falta el primero
@@ -39,11 +39,12 @@ public class PDFAcademicExtractor {
         return List.of(title, author, summary, keywords);
     }
 
-    public String readArticle(String path) throws IOException {
+    public List<String> readArticleByPath(String path) throws IOException {
         // Leer el archivo PDF y convertirlo en un arreglo de bytes
         Path uri = Paths.get(path);
         byte[] pdfBytes = Files.readAllBytes(uri);
         String text;
+        List<String> listText;
 
         try (
                 ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(pdfBytes);
@@ -51,24 +52,30 @@ public class PDFAcademicExtractor {
         ) {
             // Utilizar PDFTextStripper para extraer el texto del PDF
             PDFTextStripper pdfStripper = new PDFTextStripper();
-            pdfStripper.setStartPage(2);
-            pdfStripper.setEndPage(2);
+            pdfStripper.setStartPage(3);
+            pdfStripper.setEndPage(3);
 
             text = pdfStripper.getText(document);
+            listText = receivingValues(text);
         }
-        return text;
+        return listText;
     }
 
-    private String readArticle(byte[] pdfBytes) throws IOException {
+    //TODO: Probando con arreglo de Bytes
+    public List<String> readArticleByBytes(byte[] pdfBytes) throws IOException {
         String text;
+        List<String> listText;
 
-        try (PDDocument document = PDDocument.load(new ByteArrayInputStream(pdfBytes))) {
+        try (
+                PDDocument document = PDDocument.load(new ByteArrayInputStream(pdfBytes))
+        ) {
             PDFTextStripper pdfStripper = new PDFTextStripper();
-            pdfStripper.setStartPage(2);
-            pdfStripper.setEndPage(2);
+            pdfStripper.setStartPage(3);
+            pdfStripper.setEndPage(3);
 
             text = pdfStripper.getText(document);
+            listText = receivingValues(text);
         }
-        return text;
+        return listText;
     }
 }
