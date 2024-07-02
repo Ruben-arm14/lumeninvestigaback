@@ -1,24 +1,19 @@
 package org.lumeninvestiga.backend.repositorio.tpi;
 
-import org.lumeninvestiga.backend.repositorio.tpi.entities.data.ArticleDetail;
 import org.lumeninvestiga.backend.repositorio.tpi.entities.data.File;
 import org.lumeninvestiga.backend.repositorio.tpi.entities.data.Folder;
-import org.lumeninvestiga.backend.repositorio.tpi.entities.data.MIME_TYPE;
 import org.lumeninvestiga.backend.repositorio.tpi.entities.user.Review;
 import org.lumeninvestiga.backend.repositorio.tpi.entities.user.Role;
 import org.lumeninvestiga.backend.repositorio.tpi.entities.user.User;
 import org.lumeninvestiga.backend.repositorio.tpi.entities.user.UserDetail;
 import org.lumeninvestiga.backend.repositorio.tpi.repositories.*;
-import org.lumeninvestiga.backend.repositorio.tpi.utils.PDFAcademicExtractor;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.ComponentScan;
 
 import java.io.IOException;
 import java.security.SecureRandom;
-import java.util.List;
 
 @SpringBootApplication
 
@@ -49,7 +44,7 @@ public class RepositorioTpiApplication {
 		File file = new File();
 		file.setName("Diagrama de clases - actualización.drawio");
 		file.setSize(654700L);
-		file.setMimeType(MIME_TYPE.PDF.getMimeType());
+		file.setMimeType("application/pdf");
 		file.setData(generateRandomPdfContent());
 		file.setUser(user);
 
