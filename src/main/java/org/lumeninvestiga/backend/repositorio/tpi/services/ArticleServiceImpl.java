@@ -1,10 +1,9 @@
 package org.lumeninvestiga.backend.repositorio.tpi.services;
 
 import org.lumeninvestiga.backend.repositorio.tpi.dto.mapper.ArticleMapper;
-import org.lumeninvestiga.backend.repositorio.tpi.dto.mapper.FileMapper;
 import org.lumeninvestiga.backend.repositorio.tpi.dto.response.ArticleResponse;
 import org.lumeninvestiga.backend.repositorio.tpi.entities.data.Article;
-import org.lumeninvestiga.backend.repositorio.tpi.entities.data.File;
+import org.lumeninvestiga.backend.repositorio.tpi.entities.data.ODS_GOALS;
 import org.lumeninvestiga.backend.repositorio.tpi.repositories.ArticleRepository;
 import org.lumeninvestiga.backend.repositorio.tpi.utils.PDFAcademicExtractor;
 import org.lumeninvestiga.backend.repositorio.tpi.utils.Utility;
@@ -34,26 +33,52 @@ public class ArticleServiceImpl implements ArticleService{
 
     @Override
     @Transactional
-    public Optional<ArticleResponse> saveArticle(MultipartFile multipartFile) {
-        if(multipartFile.isEmpty()) {
-            //TODO: INVALID_RESOURCE_EXCEPTION
+    public Optional<ArticleResponse> saveArticle(List<MultipartFile> multipartFiles) {
+        if (multipartFiles.size() <= 2 && !multipartFiles.isEmpty()) {
+            //TODO: INVALID_RESOURCE EXCEPTION
+            throw new RuntimeException();
+        }
+        MultipartFile articleFile = multipartFiles.get(0);
+        MultipartFile fichaFile = multipartFiles.get(1);
+
+        // Validar el nombre del primer archivo (Artículo)
+        String articleFileName = articleFile.getOriginalFilename().toLowerCase();
+        if (!articleFileName.startsWith("articulo") && !articleFileName.startsWith("artículo")) {
+            //TODO: INVALID_RESOURCE EXCEPTION
+            throw new RuntimeException();
+        }
+
+        // Validar el nombre del segundo archivo (Ficha)
+        String fichaFileName = fichaFile.getOriginalFilename().toLowerCase();
+        if (!fichaFileName.startsWith("ficha")) {
+            //TODO: INVALID_RESOURCE EXCEPTION
             throw new RuntimeException();
         }
         Article articleDb = new Article();
         try {
-            articleDb.setName(multipartFile.getOriginalFilename());
-            articleDb.setSize(multipartFile.getSize());
+            articleDb.setName(articleFile.getOriginalFilename());
+            articleDb.setSize(articleFile.getSize());
             articleDb.setCreatedDate(LocalDateTime.now());
-            articleDb.setMimeType(multipartFile.getContentType());
+            articleDb.setMimeType(articleFile.getContentType());
             // No es necesario guardar el byte[]
-            articleDb.setData(multipartFile.getBytes());
+            articleDb.setData(articleFile.getBytes());
 
-            List<String> valueList = pdfAcademicExtractor.readArticleByBytes(multipartFile.getBytes());
-            articleDb.getArticleDetail().setTitle(valueList.get(1));
-            articleDb.getArticleDetail().setAuthor(valueList.get(2));
-            articleDb.getArticleDetail().setResume(valueList.get(3));
-            articleDb.getArticleDetail().setKeywords(stringToSet(valueList.get(4)));
+            // Extractor para el artículo de investigación
+            List<String> valueList = pdfAcademicExtractor.readArticleByBytes(articleFile.getBytes());
+            articleDb.getArticleDetail().setTitle(valueList.get(0));
+            articleDb.getArticleDetail().setAuthor(valueList.get(1));
+            //TODO: implementar la logica para obtener el asesor en el artículo de investigación.
+            articleDb.getArticleDetail().setAdvisor("");
+            articleDb.getArticleDetail().setResume(valueList.get(2));
+            articleDb.getArticleDetail().setKeywords(stringToSet(valueList.get(3)));
+
+            List<String> valueList1 = pdfAcademicExtractor.readFichaByBytes(fichaFile.getBytes());
             //TODO: Falta area, subArea, period(Consultarlo), ods, advisor. (Obtenerlo del ficha de investigación)
+            //Se realiza un split(",") separando usando de limitador el , y elegimos la posicion de cada palabra
+            articleDb.getArticleDetail().setArea(valueList1.get(2).split(",")[0]);
+            articleDb.getArticleDetail().setSubArea(valueList1.get(2).split(",")[1]);
+            //TODO: Revisar el atributo porque se puede agregar más de un ODS
+            articleDb.getArticleDetail().setODS(ODS_GOALS.FIRST);
 
             articleRepository.save(articleDb);
         } catch (IOException e) {

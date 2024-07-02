@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.Optional;
 
 public interface ArticleService {
-    Optional<ArticleResponse> saveArticle(MultipartFile multipartFile);
+    Optional<ArticleResponse> saveArticle(List<MultipartFile> multipartFile);
     List<ArticleResponse> getAllArticles(Pageable pageable);
     Optional<ArticleResponse> getArticleById(Long id);
     Optional<ArticleResponse> getArticleByName(String name);
