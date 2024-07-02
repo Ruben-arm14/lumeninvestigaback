@@ -1,6 +1,7 @@
 package org.lumeninvestiga.backend.repositorio.tpi.services;
 
 import org.lumeninvestiga.backend.repositorio.tpi.dto.mapper.UserMapper;
+import org.lumeninvestiga.backend.repositorio.tpi.dto.request.UserLoginRequest;
 import org.lumeninvestiga.backend.repositorio.tpi.dto.request.UserRegistrationRequest;
 import org.lumeninvestiga.backend.repositorio.tpi.dto.request.UserUpdateRequest;
 import org.lumeninvestiga.backend.repositorio.tpi.dto.response.UserResponse;
@@ -67,7 +68,7 @@ public class UserServiceImpl implements UserService{
 
     @Override
     @Transactional
-    public void updateUserById(Long id, UserUpdateRequest request) {
+    public Optional<UserResponse> updateUserById(Long id, UserUpdateRequest request) {
         Optional<User> userOptional = userRepository.findById(id);
         userOptional.ifPresentOrElse(userDb -> {
             userDb.getUserDetail().setName(request.name());
@@ -76,19 +77,33 @@ public class UserServiceImpl implements UserService{
         },
                 //TODO: NOTFOUND_RESOURCE_EXCEPTION
                 () -> new RuntimeException());
+        return Optional.of(UserMapper.INSTANCE.toUserResponse(userOptional.get()));
     }
 
     @Override
     @Transactional
-    public void deleteUserById(Long id) {
-        if(existUserById(id)) {
-            userRepository.deleteById(id);
+    public boolean deleteUserById(Long id) {
+        if(!existUserById(id)) {
+            return false;
         }
+        userRepository.deleteById(id);
+        return true;
     }
 
     @Override
     @Transactional(readOnly = true)
     public boolean existUserById(Long id) {
         return userRepository.existsById(id);
+    }
+
+    @Override
+    public boolean loginSession(UserLoginRequest request) {
+        Optional<User> userOptional = userRepository.findByEmailAddress(request.email());
+        if(userOptional.isEmpty()) {
+            //TODO: NOTFOUND_RESOURCE EXCEPTION
+            throw new RuntimeException();
+        }
+        return userOptional.get().getUserDetail().getPassword()
+                .equals(passwordEncoder.encode(request.password()));
     }
 }

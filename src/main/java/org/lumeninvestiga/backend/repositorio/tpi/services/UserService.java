@@ -1,5 +1,6 @@
 package org.lumeninvestiga.backend.repositorio.tpi.services;
 
+import org.lumeninvestiga.backend.repositorio.tpi.dto.request.UserLoginRequest;
 import org.lumeninvestiga.backend.repositorio.tpi.dto.request.UserRegistrationRequest;
 import org.lumeninvestiga.backend.repositorio.tpi.dto.request.UserUpdateRequest;
 import org.lumeninvestiga.backend.repositorio.tpi.dto.response.UserResponse;
@@ -13,8 +14,10 @@ public interface UserService {
     Optional<UserResponse> saveUser(UserRegistrationRequest request);
     List<UserResponse> getAllUsers(Pageable pageable);
     Optional<UserResponse> getUserById(Long id);
-    void updateUserById(Long id, UserUpdateRequest request);
-    void deleteUserById(Long id);
+    Optional<UserResponse> updateUserById(Long id, UserUpdateRequest request);
+    boolean deleteUserById(Long id);
     boolean existUserById(Long id);
 
+    //Utilitarios
+    boolean loginSession(UserLoginRequest request);
 }
