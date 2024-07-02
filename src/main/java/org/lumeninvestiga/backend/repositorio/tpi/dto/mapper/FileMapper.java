@@ -11,8 +11,9 @@ public interface FileMapper {
     FileMapper INSTANCE = Mappers.getMapper(FileMapper.class);
 
     //TODO: Revisar con record de FileResponse
-    @Mapping(source = "mimeType", target = "mimeType")
-    @Mapping(source = "folder.name", target = "folderName")
-    @Mapping(source = "data", target = "fileData")
+    @Mapping(target = "userName", source = "user.userDetail.name")
+    @Mapping(target = "folderName", source = "folder.name")
+    @Mapping(target = "shared", source = "folder.shared")
+    @Mapping(target = "mimeType", source = "file.mimeType")
     FileResponse toFileResponse(File file);
 }
