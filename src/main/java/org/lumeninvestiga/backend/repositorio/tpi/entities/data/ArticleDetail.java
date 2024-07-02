@@ -22,6 +22,7 @@ public class ArticleDetail {
     @Column(nullable = false)
     private String period;
     @Column(nullable = false)
+    //TODO: Contemplar la existencia de más de un ODS.
     //@Enumerated(EnumType.STRING)
     private ODS_GOALS ODS;
     @Column(nullable = false)
