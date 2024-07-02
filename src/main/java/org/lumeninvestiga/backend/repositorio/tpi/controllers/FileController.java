@@ -57,6 +57,7 @@ public class FileController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteFileById(@PathVariable Long id){
+        fileService.deleteFileById(id);
         return ResponseEntity.status(HttpStatus.ACCEPTED).build();
     }
 }
