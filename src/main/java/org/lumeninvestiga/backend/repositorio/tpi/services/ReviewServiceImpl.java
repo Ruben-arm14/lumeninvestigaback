@@ -4,8 +4,12 @@ import org.lumeninvestiga.backend.repositorio.tpi.dto.mapper.ReviewMapper;
 import org.lumeninvestiga.backend.repositorio.tpi.dto.request.ReviewPostRequest;
 import org.lumeninvestiga.backend.repositorio.tpi.dto.request.ReviewUpdateRequest;
 import org.lumeninvestiga.backend.repositorio.tpi.dto.response.ReviewResponse;
+import org.lumeninvestiga.backend.repositorio.tpi.entities.data.Article;
 import org.lumeninvestiga.backend.repositorio.tpi.entities.user.Review;
+import org.lumeninvestiga.backend.repositorio.tpi.entities.user.User;
+import org.lumeninvestiga.backend.repositorio.tpi.repositories.ArticleRepository;
 import org.lumeninvestiga.backend.repositorio.tpi.repositories.ReviewRepository;
+import org.lumeninvestiga.backend.repositorio.tpi.repositories.UserRepository;
 import org.lumeninvestiga.backend.repositorio.tpi.utils.Utility;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -18,18 +22,22 @@ import java.util.Optional;
 @Service
 public class ReviewServiceImpl implements ReviewService{
     private final ReviewRepository reviewRepository;
-    private final ReviewMapper reviewMapper;
+    private final UserRepository userRepository;
+    private final ArticleRepository articleRepository;
 
-    public ReviewServiceImpl(ReviewRepository reviewRepository, ReviewMapper reviewMapper) {
+    public ReviewServiceImpl(ReviewRepository reviewRepository, UserRepository userRepository, ArticleRepository articleRepository) {
         this.reviewRepository = reviewRepository;
-        this.reviewMapper = reviewMapper;
+        this.userRepository = userRepository;
+        this.articleRepository = articleRepository;
     }
 
     @Override
     @Transactional
-    public Optional<ReviewResponse> saveReview(ReviewPostRequest request) {
-        if(request.userId() == 0 && request.articleId() == 0) {
-            //TODO: INVALID_RESOURCE_EXCEPTION
+    public Optional<ReviewResponse> saveReview(Long userId, Long articleId, ReviewPostRequest request) {
+        Optional<User> userOptional = userRepository.findById(userId);
+        Optional<Article> articleOptional = articleRepository.findById(articleId);
+        if(userOptional.isEmpty() && articleOptional.isEmpty()) {
+            //TODO: REFERENCE_NOTFOUND EXCEPTION
             throw new RuntimeException();
         }
         if(request.comment().isBlank()) {
@@ -39,11 +47,11 @@ public class ReviewServiceImpl implements ReviewService{
         Review reviewRequest = new Review();
         // Review tomamos sus FK y los setteamos con los id's del request
         // cansiderar la logica de id's a los @PathVariable del controlador.
-        reviewRequest.getUser().setId(request.userId());
-        reviewRequest.getArticle().setId(request.articleId());
+        reviewRequest.getUser().setId(userId);
+        reviewRequest.getArticle().setId(articleId);
         reviewRequest.setComment(request.comment());
         reviewRepository.save(reviewRequest);
-        return Optional.of(reviewMapper.toReviewResponse(reviewRequest));
+        return Optional.of(ReviewMapper.INSTANCE.toReviewResponse(reviewRequest));
     }
 
     @Override
@@ -51,7 +59,7 @@ public class ReviewServiceImpl implements ReviewService{
     public List<ReviewResponse> getAllReviews(Pageable pageable) {
         int page = Utility.getCurrentPage(pageable);
         return reviewRepository.findAll(PageRequest.of(page, pageable.getPageSize())).stream()
-                .map(reviewMapper::toReviewResponse)
+                .map(ReviewMapper.INSTANCE::toReviewResponse)
                 .toList();
     }
 
@@ -63,7 +71,7 @@ public class ReviewServiceImpl implements ReviewService{
             //TODO: NOTFOUND_RESOURCE_EXCEPTION
             throw new RuntimeException();
         }
-        return Optional.of(reviewMapper.toReviewResponse(reviewOptional.get()));
+        return Optional.of(ReviewMapper.INSTANCE.toReviewResponse(reviewOptional.get()));
     }
 
     @Override
