@@ -12,7 +12,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/article")
+@RequestMapping("/api/articles")
 public class ArticleController {
     private final ArticleService articleService;
 
@@ -23,6 +23,11 @@ public class ArticleController {
     @GetMapping
     public ResponseEntity<?> readAllArticles(@PageableDefault Pageable pageable) {
         return ResponseEntity.status(HttpStatus.OK).body(articleService.getAllArticles(pageable));
+    }
+
+    @GetMapping
+    public ResponseEntity<?> readAllArticlesByKeyword(@PageableDefault Pageable pageable, @PathVariable String keyword) {
+        return ResponseEntity.status(HttpStatus.OK).body(articleService.getAllArticlesByKeyword(pageable, keyword));
     }
 
     @PostMapping(
@@ -67,10 +72,10 @@ public class ArticleController {
         return ResponseEntity.status(HttpStatus.ACCEPTED).build();
     }
 
-    @GetMapping("/search/{name}")
-    public ResponseEntity<?> searchAllArticleByName(@PathVariable String name) {
-        //TODO: Hacer un método en la capa service para buscar artículos por nombre
-        // adecuarlo para que las busquedas sean por un buscador del frontend
-        return ResponseEntity.status(HttpStatus.ACCEPTED).build();
-    }
+//    @GetMapping("/search/{name}")
+//    public ResponseEntity<?> searchAllArticleByName(@PathVariable String name) {
+//        //TODO: Hacer un método en la capa service para buscar artículos por nombre
+//        // adecuarlo para que las busquedas sean por un buscador del frontend
+//        return ResponseEntity.status(HttpStatus.ACCEPTED).build();
+//    }
 }

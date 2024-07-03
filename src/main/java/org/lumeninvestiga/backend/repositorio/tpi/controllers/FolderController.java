@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("/folders")
+@RequestMapping("api/folders")
 public class FolderController {
     private final FolderService folderService;
 
