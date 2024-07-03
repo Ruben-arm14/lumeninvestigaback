@@ -27,10 +27,10 @@ public class SpringSecurityConfig {
     SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception {
         return httpSecurity
                 .authorizeHttpRequests(authz -> authz
-                        .requestMatchers(HttpMethod.GET, "/users", "/users/{id}", "/reviews", "/reviews/{id}", "/files", "/files/{id}", "/folders", "/folders/{id}").permitAll()
-                        .requestMatchers(HttpMethod.POST, "/users", "/reviews", "/files", "/folders").permitAll()
-                        .requestMatchers(HttpMethod.PUT, "/users", "/users/{id}", "/reviews", "/reviews/{id}", "/files", "/files/{id}", "/folders", "/folders/{id}").permitAll()
-                        .requestMatchers(HttpMethod.DELETE, "/users", "/users/{id}", "/reviews", "/reviews/{id}", "/files", "/files/{id}", "/folders", "/folders/{id}").permitAll()
+                        .requestMatchers(HttpMethod.GET, getPublicGetEndpoints()).permitAll()
+                        .requestMatchers(HttpMethod.POST, getPublicPostEndpoints()).permitAll()
+                        .requestMatchers(HttpMethod.PUT, getPublicPutEndpoints()).permitAll()
+                        .requestMatchers(HttpMethod.DELETE, getPublicDeleteEndpoints()).permitAll()
                         .anyRequest().authenticated()
                 )
                 .csrf(AbstractHttpConfigurer::disable)
@@ -50,5 +50,50 @@ public class SpringSecurityConfig {
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", config);
         return source;
+    }
+
+    private String[] getPublicGetEndpoints() {
+        return new String[]{
+                "/api/users", "/api/users/{id}",
+                "/api/reviews", "/api/reviews/{id}",
+                "/api/files", "/api/files/{id}",
+                "/api/folders", "/api/folders/{id}",
+
+                "/api/articles", "/api/articles/{name}",
+                "/api/articles/{article_id}", "/api/articles/search/{name}"
+
+        };
+    }
+
+    private String[] getPublicPostEndpoints() {
+        return new String[]{
+                "/api/users", "/api/reviews", "/api/files", "/api/folders",
+                "/api/users/login",
+
+                "/api/articles/upload"
+        };
+    }
+
+    private String[] getPublicPutEndpoints() {
+        return new String[]{
+                "/api/users", "/api/users/{id}",
+                "/api/reviews", "/api/reviews/{id}",
+                "/api/files", "/api/files/{id}",
+                "/api/folders", "/api/folders/{id}",
+
+                "/api/articles/{article_id}"
+
+        };
+    }
+
+    private String[] getPublicDeleteEndpoints() {
+        return new String[]{
+                "/api/users", "/api/users/{id}",
+                "/api/reviews", "/api/reviews/{id}",
+                "/api/files", "/api/files/{id}",
+                "/api/folders", "/api/folders/{id}",
+
+                "/api/articles/{article_id}"
+        };
     }
 }
