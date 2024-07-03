@@ -11,6 +11,7 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.io.IOException;
 import java.security.SecureRandom;
@@ -27,7 +28,8 @@ public class RepositorioTpiApplication {
 
 	@Bean
 	CommandLineRunner commandLineRunner(UserRepository userRepository, FileRepository fileRepository,
-										FolderRepository folderRepository, RoleRepository roleRepository) throws IOException {
+										FolderRepository folderRepository, RoleRepository roleRepository,
+										PasswordEncoder passwordEncoder) throws IOException {
 		Role roleAdmin = new Role("ROLE_ADMIN");
 		Role roleUser = new Role("ROLE_USER");
 		Role roleStudent = new Role("ROLE_STUDENT");
@@ -59,7 +61,7 @@ public class RepositorioTpiApplication {
 		userD.setCode("20114234");
 		userD.setLastName("Sanchez");
 		userD.setEmailAddress("1234@example.com");
-		userD.setPassword("contraseña");
+		userD.setPassword(passwordEncoder.encode("1234"));
 
 		userD.setUser(user);
 		user.setUserDetail(userD);
@@ -69,7 +71,7 @@ public class RepositorioTpiApplication {
 		userD1.setLastName("Rodriguez");
 		userD1.setCode("20223412");
 		userD1.setEmailAddress("12341234@example.com");
-		userD1.setPassword("nosequeponer");
+		userD1.setPassword(passwordEncoder.encode("nosequeponer"));
 
 		userD1.setUser(user1);
 		user1.setUserDetail(userD1);
