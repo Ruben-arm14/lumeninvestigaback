@@ -98,6 +98,15 @@ public class ArticleServiceImpl implements ArticleService{
     }
 
     @Override
+    public List<ArticleResponse> getAllArticlesByKeyword(Pageable pageable, String keyword) {
+        int page = Utility.getCurrentPage(pageable);
+        return articleRepository.findByTitleContaining(PageRequest.of(page, pageable.getPageSize()), keyword)
+                .stream()
+                .map(ArticleMapper.INSTANCE::toArticleResponse)
+                .toList();
+    }
+
+    @Override
     @Transactional(readOnly = true)
     public Optional<ArticleResponse> getArticleById(Long id) {
         Optional<Article> articleOptional = articleRepository.findById(id);

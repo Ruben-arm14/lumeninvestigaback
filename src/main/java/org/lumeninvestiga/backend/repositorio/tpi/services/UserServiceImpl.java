@@ -97,13 +97,13 @@ public class UserServiceImpl implements UserService{
     }
 
     @Override
+    @Transactional(readOnly = true)
     public boolean loginSession(UserLoginRequest request) {
         Optional<User> userOptional = userRepository.findByEmailAddress(request.email());
         if(userOptional.isEmpty()) {
             //TODO: NOTFOUND_RESOURCE EXCEPTION
             throw new RuntimeException();
         }
-        return userOptional.get().getUserDetail().getPassword()
-                .equals(passwordEncoder.encode(request.password()));
+        return passwordEncoder.matches(request.password(), userOptional.get().getUserDetail().getPassword());
     }
 }
