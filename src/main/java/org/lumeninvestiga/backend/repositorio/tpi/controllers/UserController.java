@@ -64,7 +64,7 @@ public class UserController {
 
     @PutMapping("/{user_id}")
     public ResponseEntity<?> updateUserById(
-            @PathVariable Long userId,
+            @PathVariable("user_id") Long userId,
             @RequestBody UserUpdateRequest request) {
         Optional<UserResponse> response = userService.updateUserById(userId, request);
         if(response.isEmpty()) {

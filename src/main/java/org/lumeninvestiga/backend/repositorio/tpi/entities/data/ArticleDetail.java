@@ -31,7 +31,7 @@ public class ArticleDetail {
     private String author;
     @Column(nullable = false)
     private String advisor;
-    @Column(nullable = false)
+    @Column(name = "resume", columnDefinition = "TEXT")
     private String resume;
     @Column(nullable = false)
     private Set<String> keywords;

@@ -102,7 +102,7 @@ public class UserServiceImpl implements UserService{
         Optional<User> userOptional = userRepository.findByEmailAddress(request.email());
         if(userOptional.isEmpty()) {
             //TODO: NOTFOUND_RESOURCE EXCEPTION
-            throw new RuntimeException();
+            throw new RuntimeException("Recurso no encontrado");
         }
         return passwordEncoder.matches(request.password(), userOptional.get().getUserDetail().getPassword());
     }

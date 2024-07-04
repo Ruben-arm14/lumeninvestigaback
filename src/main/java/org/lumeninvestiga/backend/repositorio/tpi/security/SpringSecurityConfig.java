@@ -76,7 +76,7 @@ public class SpringSecurityConfig {
 
     private String[] getPublicPutEndpoints() {
         return new String[]{
-                "/api/users", "/api/users/{id}",
+                "/api/users", "/api/users/{user_id}",
                 "/api/reviews", "/api/reviews/{id}",
                 "/api/files", "/api/files/{id}",
                 "/api/folders", "/api/folders/{id}",

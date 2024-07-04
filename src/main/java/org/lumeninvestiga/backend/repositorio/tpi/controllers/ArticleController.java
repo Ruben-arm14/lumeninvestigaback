@@ -25,8 +25,8 @@ public class ArticleController {
         return ResponseEntity.status(HttpStatus.OK).body(articleService.getAllArticles(pageable));
     }
 
-    @GetMapping
-    public ResponseEntity<?> readAllArticlesByKeyword(@PageableDefault Pageable pageable, @PathVariable String keyword) {
+    @GetMapping("/search")
+    public ResponseEntity<?> readAllArticlesByKeyword(@PageableDefault Pageable pageable, @RequestParam String keyword) {
         return ResponseEntity.status(HttpStatus.OK).body(articleService.getAllArticlesByKeyword(pageable, keyword));
     }
 
@@ -34,48 +34,47 @@ public class ArticleController {
             value = "/upload",
             consumes = "multipart/form-data",
             produces = "application/json")
-    public ResponseEntity<?> uploadFiles(@RequestParam("file") List<MultipartFile> files) {
+    public ResponseEntity<?> uploadFiles(@RequestParam("files") List<MultipartFile> files) {
         articleService.saveArticle(files);
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
-    @GetMapping("/{name}")
+    @GetMapping("/name/{name}")
     public ResponseEntity<?> readByName(@PathVariable String name) {
         return ResponseEntity.status(HttpStatus.FOUND).body(articleService.getArticleByName(name));
-        //return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
     }
 
-    @GetMapping("/{article_id}")
+    @GetMapping("/id/{article_id}")
     public ResponseEntity<?> readArticleById(@PathVariable("article_id") Long articleId) {
         return ResponseEntity.status(HttpStatus.ACCEPTED).body(articleService.getArticleById(articleId));
     }
 
-    @PutMapping("/{article_id}")
+    @PutMapping("/id/{article_id}")
     public ResponseEntity<?> updateArticleById(
             @PathVariable("article_id") Long articleId,
             @RequestParam ArticleUpdateRequest request) {
-        //TODO: Hacer un método en la capa service para actualizar el contenido del artículo
+        // TODO: Implement method in service layer to update article content
         return ResponseEntity.status(HttpStatus.ACCEPTED).build();
     }
 
-    @DeleteMapping("/{article_id}")
+    @DeleteMapping("/id/{article_id}")
     public ResponseEntity<?> deleteArticleById(@PathVariable("article_id") Long articleId){
         articleService.deleteArticleById(articleId);
         return ResponseEntity.status(HttpStatus.ACCEPTED).build();
     }
 
-    //NOTE: considerar eliminar método porque la búsqueda de hace de un todo de artículos.
-    @GetMapping("/search/{name}")
+    // Consider removing this method if search functionality is implemented differently.
+    @GetMapping("/search/name/{name}")
     public ResponseEntity<?> searchArticleByName(@PathVariable String name) {
-        //TODO: Hacer un método en la capa service para buscar un artículo por nombre
-        // adecuarlo para que las busquedas sean por un buscador del frontend
+        // TODO: Implement method in service layer to search article by name
+        // Adjust to make searches from a frontend search component
         return ResponseEntity.status(HttpStatus.ACCEPTED).build();
     }
 
-//    @GetMapping("/search/{name}")
+//    @GetMapping("/search/all/{name}")
 //    public ResponseEntity<?> searchAllArticleByName(@PathVariable String name) {
-//        //TODO: Hacer un método en la capa service para buscar artículos por nombre
-//        // adecuarlo para que las busquedas sean por un buscador del frontend
+//        // TODO: Implement method in service layer to search articles by name
+//        // Adjust to make searches from a frontend search component
 //        return ResponseEntity.status(HttpStatus.ACCEPTED).build();
 //    }
 }

@@ -4,6 +4,10 @@ import org.lumeninvestiga.backend.repositorio.tpi.dto.mapper.ArticleMapper;
 import org.lumeninvestiga.backend.repositorio.tpi.dto.response.ArticleResponse;
 import org.lumeninvestiga.backend.repositorio.tpi.entities.data.Article;
 import org.lumeninvestiga.backend.repositorio.tpi.entities.data.ODS_GOALS;
+import org.lumeninvestiga.backend.repositorio.tpi.exceptions.InvalidDocumentFormatException;
+import org.lumeninvestiga.backend.repositorio.tpi.exceptions.NotFoundResourceException;
+import org.lumeninvestiga.backend.repositorio.tpi.exceptions.ResourceCountException;
+import org.lumeninvestiga.backend.repositorio.tpi.exceptions.SavingErrorException;
 import org.lumeninvestiga.backend.repositorio.tpi.repositories.ArticleRepository;
 import org.lumeninvestiga.backend.repositorio.tpi.utils.PDFAcademicExtractor;
 import org.lumeninvestiga.backend.repositorio.tpi.utils.Utility;
@@ -34,25 +38,22 @@ public class ArticleServiceImpl implements ArticleService{
     @Override
     @Transactional
     public Optional<ArticleResponse> saveArticle(List<MultipartFile> multipartFiles) {
-        if (multipartFiles.size() <= 2 && !multipartFiles.isEmpty()) {
-            //TODO: INVALID_RESOURCE EXCEPTION
-            throw new RuntimeException();
-        }
+//        if (multipartFiles.size() <= 2 && !multipartFiles.isEmpty()) {
+//            throw new ResourceCountException("Se espera dos documentos");
+//        }
         MultipartFile articleFile = multipartFiles.get(0);
         MultipartFile fichaFile = multipartFiles.get(1);
 
         // Validar el nombre del primer archivo (Artículo)
         String articleFileName = articleFile.getOriginalFilename().toLowerCase();
         if (!articleFileName.startsWith("articulo") && !articleFileName.startsWith("artículo")) {
-            //TODO: INVALID_RESOURCE EXCEPTION
-            throw new RuntimeException();
+            throw new InvalidDocumentFormatException("Error en el formato del nombre de articulo");
         }
 
         // Validar el nombre del segundo archivo (Ficha)
         String fichaFileName = fichaFile.getOriginalFilename().toLowerCase();
         if (!fichaFileName.startsWith("ficha")) {
-            //TODO: INVALID_RESOURCE EXCEPTION
-            throw new RuntimeException();
+            throw new InvalidDocumentFormatException("Error en el formato del nombre de ficha");
         }
         Article articleDb = new Article();
         try {
@@ -69,21 +70,24 @@ public class ArticleServiceImpl implements ArticleService{
             articleDb.getArticleDetail().setAuthor(valueList.get(1));
             //TODO: implementar la logica para obtener el asesor en el artículo de investigación.
             articleDb.getArticleDetail().setAdvisor("");
-            articleDb.getArticleDetail().setResume(valueList.get(2));
-            articleDb.getArticleDetail().setKeywords(stringToSet(valueList.get(3)));
-
+            articleDb.getArticleDetail().setResume(valueList.get(2).replace("\r\n", ""));
+            articleDb.getArticleDetail().setKeywords(stringToSet(valueList.get(3)
+                    .replace("\r\n", "")
+                    .replace(".", "")
+                    )
+            );
             List<String> valueList1 = pdfAcademicExtractor.readFichaByBytes(fichaFile.getBytes());
             //TODO: Falta area, subArea, period(Consultarlo), ods, advisor. (Obtenerlo del ficha de investigación)
             //Se realiza un split(",") separando usando de limitador el , y elegimos la posicion de cada palabra
-            articleDb.getArticleDetail().setArea(valueList1.get(2).split(",")[0]);
-            articleDb.getArticleDetail().setSubArea(valueList1.get(2).split(",")[1]);
+            articleDb.getArticleDetail().setArea(valueList1.get(2).split(",")[0].trim());
+            articleDb.getArticleDetail().setSubArea(valueList1.get(2).split(",")[1].trim());
             //TODO: Revisar el atributo porque se puede agregar más de un ODS
             articleDb.getArticleDetail().setODS(ODS_GOALS.FIRST);
 
             articleRepository.save(articleDb);
         } catch (IOException e) {
-            //TODO: SAVING_ERROR EXCEPTION
-            throw new RuntimeException(e);
+            //TODO: Revisar comentario
+            throw new SavingErrorException("Error al guardar el articulo");
         }
         return Optional.of(ArticleMapper.INSTANCE.toArticleResponse(articleDb));
     }
@@ -111,8 +115,7 @@ public class ArticleServiceImpl implements ArticleService{
     public Optional<ArticleResponse> getArticleById(Long id) {
         Optional<Article> articleOptional = articleRepository.findById(id);
         if(articleOptional.isEmpty()) {
-            //TODO: NOTFOUND_RESOURCE_EXCEPTION
-            throw new RuntimeException();
+            throw new NotFoundResourceException("Entidad no encontrada");
         }
         return Optional.of(ArticleMapper.INSTANCE.toArticleResponse(articleOptional.get()));
     }
@@ -122,8 +125,7 @@ public class ArticleServiceImpl implements ArticleService{
     public Optional<ArticleResponse> getArticleByName(String name) {
         Optional<Article> articleOptional = articleRepository.findByName(name);
         if(articleOptional.isEmpty()) {
-            //TODO: NOTFOUND_RESOURCE_EXCEPTION
-            throw new RuntimeException();
+            throw new NotFoundResourceException("Entidad no encontrada");
         }
         return Optional.of(ArticleMapper.INSTANCE.toArticleResponse(articleOptional.get()));
     }
