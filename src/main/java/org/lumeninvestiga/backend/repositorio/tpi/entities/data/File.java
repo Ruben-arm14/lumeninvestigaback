@@ -4,6 +4,9 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
+import java.util.Arrays;
+import java.util.Objects;
+
 @Entity
 @Table(
         name = "files"
@@ -45,5 +48,20 @@ public class File extends StorableItem {
 
     public void setFolder(Folder folder) {
         this.folder = folder;
+    }
+
+    @Override
+    public boolean equals(Object object) {
+        if (this == object) return true;
+        if (object == null || getClass() != object.getClass()) return false;
+        File file = (File) object;
+        return Arrays.equals(data, file.data) && Objects.equals(mimeType, file.mimeType) && Objects.equals(folder, file.folder);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = Objects.hash(mimeType, folder);
+        result = 31 * result + Arrays.hashCode(data);
+        return result;
     }
 }

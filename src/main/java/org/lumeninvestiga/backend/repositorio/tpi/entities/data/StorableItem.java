@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 import org.lumeninvestiga.backend.repositorio.tpi.entities.user.User;
 
 import java.time.LocalDateTime;
+import java.util.Objects;
 
 @Entity
 @Inheritance(
@@ -81,5 +82,18 @@ public class StorableItem {
 
     public void setUser(User user) {
         this.user = user;
+    }
+
+    @Override
+    public boolean equals(Object object) {
+        if (this == object) return true;
+        if (object == null || getClass() != object.getClass()) return false;
+        StorableItem that = (StorableItem) object;
+        return Objects.equals(id, that.id) && Objects.equals(name, that.name) && Objects.equals(size, that.size) && Objects.equals(createdDate, that.createdDate) && Objects.equals(user, that.user);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, name, size, createdDate, user);
     }
 }

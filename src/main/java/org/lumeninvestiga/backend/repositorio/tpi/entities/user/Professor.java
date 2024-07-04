@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @Entity
 @Table(
@@ -53,5 +54,18 @@ public class Professor extends User{
 
     public void removeCourse(Course course) {
         this.courses.remove(course);
+    }
+
+    @Override
+    public boolean equals(Object object) {
+        if (this == object) return true;
+        if (object == null || getClass() != object.getClass()) return false;
+        Professor professor = (Professor) object;
+        return Objects.equals(user, professor.user) && Objects.equals(courses, professor.courses);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(user, courses);
     }
 }

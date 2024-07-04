@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import org.lumeninvestiga.backend.repositorio.tpi.entities.user.Review;
 
 import java.util.List;
+import java.util.Objects;
 
 @Entity
 @Table(
@@ -64,5 +65,18 @@ public class Article extends File{
         if(this.likeCount > 0) {
             this.likeCount--;
         }
+    }
+
+    @Override
+    public boolean equals(Object object) {
+        if (this == object) return true;
+        if (object == null || getClass() != object.getClass()) return false;
+        Article article = (Article) object;
+        return Objects.equals(likeCount, article.likeCount) && Objects.equals(reviews, article.reviews) && Objects.equals(articleDetail, article.articleDetail);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(likeCount, reviews, articleDetail);
     }
 }

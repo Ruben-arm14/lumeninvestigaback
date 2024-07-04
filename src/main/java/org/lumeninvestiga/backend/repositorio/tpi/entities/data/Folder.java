@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @Entity
 @Table(
@@ -56,5 +57,18 @@ public class Folder extends StorableItem {
     public void removeFile(File file) {
         this.files.remove(file);
         file.setFolder(null);
+    }
+
+    @Override
+    public boolean equals(Object object) {
+        if (this == object) return true;
+        if (object == null || getClass() != object.getClass()) return false;
+        Folder folder = (Folder) object;
+        return shared == folder.shared && Objects.equals(files, folder.files);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(shared, files);
     }
 }

@@ -3,6 +3,7 @@ package org.lumeninvestiga.backend.repositorio.tpi.entities.data;
 import jakarta.persistence.*;
 
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 
 @Entity
@@ -21,30 +22,29 @@ public class ArticleDetail {
     private String subArea;
     @Column(nullable = false)
     private String period;
-    @Column(nullable = false)
-    //TODO: Contemplar la existencia de más de un ODS.
-    //@Enumerated(EnumType.STRING)
-    private ODS_GOALS ODS;
+    @Column(name = "ods", nullable = false)
+    private String ODS;
     @Column(nullable = false)
     private String title;
     @Column(nullable = false)
     private String author;
     @Column(nullable = false)
     private String advisor;
-    @Column(name = "resume", columnDefinition = "TEXT")
+    @Column(nullable = false ,columnDefinition = "TEXT")
     private String resume;
     @Column(nullable = false)
-    private Set<String> keywords;
+    private String keywords;
 
     public ArticleDetail() {
         this.area = "";
         this.subArea = "";
         this.period = "";
+        this.ODS = "";
         this.title = "";
         this.author = "";
         this.advisor = "";
         this.resume = "";
-        this.keywords = new HashSet<>();
+        this.keywords = "";
     }
 
     public Long getId() {
@@ -75,11 +75,11 @@ public class ArticleDetail {
         this.period = period;
     }
 
-    public ODS_GOALS getODS() {
+    public String getODS() {
         return ODS;
     }
 
-    public void setODS(ODS_GOALS ODS) {
+    public void setODS(String ODS) {
         this.ODS = ODS;
     }
 
@@ -115,11 +115,24 @@ public class ArticleDetail {
         this.resume = resume;
     }
 
-    public Set<String> getKeywords() {
+    public String getKeywords() {
         return keywords;
     }
 
-    public void setKeywords(Set<String> keywords) {
+    public void setKeywords(String keywords) {
         this.keywords = keywords;
+    }
+
+    @Override
+    public boolean equals(Object object) {
+        if (this == object) return true;
+        if (object == null || getClass() != object.getClass()) return false;
+        ArticleDetail that = (ArticleDetail) object;
+        return Objects.equals(id, that.id) && Objects.equals(area, that.area) && Objects.equals(subArea, that.subArea) && Objects.equals(period, that.period) && Objects.equals(ODS, that.ODS) && Objects.equals(title, that.title) && Objects.equals(author, that.author) && Objects.equals(advisor, that.advisor) && Objects.equals(resume, that.resume) && Objects.equals(keywords, that.keywords);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, area, subArea, period, ODS, title, author, advisor, resume, keywords);
     }
 }

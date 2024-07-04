@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 import org.lumeninvestiga.backend.repositorio.tpi.entities.data.Article;
 
 import java.time.LocalDateTime;
+import java.util.Objects;
 
 @Entity
 @Table(
@@ -81,5 +82,18 @@ public class Review {
         if(this.likeCount > 0) {
             this.likeCount--;
         }
+    }
+
+    @Override
+    public boolean equals(Object object) {
+        if (this == object) return true;
+        if (object == null || getClass() != object.getClass()) return false;
+        Review review = (Review) object;
+        return Objects.equals(id, review.id) && Objects.equals(likeCount, review.likeCount) && Objects.equals(comment, review.comment) && Objects.equals(createdDate, review.createdDate) && Objects.equals(user, review.user) && Objects.equals(article, review.article);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, likeCount, comment, createdDate, user, article);
     }
 }

@@ -8,6 +8,7 @@ import org.lumeninvestiga.backend.repositorio.tpi.entities.data.StorableItem;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @Entity
 @Inheritance(
@@ -176,5 +177,18 @@ public class User {
 
     public void removeRole(Role role) {
         this.roles.remove(role);
+    }
+
+    @Override
+    public boolean equals(Object object) {
+        if (this == object) return true;
+        if (object == null || getClass() != object.getClass()) return false;
+        User user = (User) object;
+        return enabled == user.enabled && admin == user.admin && Objects.equals(id, user.id) && Objects.equals(userDetail, user.userDetail) && Objects.equals(reviews, user.reviews) && Objects.equals(storableItems, user.storableItems) && Objects.equals(roles, user.roles);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, userDetail, reviews, storableItems, roles, enabled, admin);
     }
 }
