@@ -93,7 +93,7 @@ public class SpringSecurityConfig {
                 "/api/files", "/api/files/{id}",
                 "/api/folders", "/api/folders/{id}",
 
-                "/api/articles/{article_id}"
+                "/api/articles/id/{article_id}"
         };
     }
 }

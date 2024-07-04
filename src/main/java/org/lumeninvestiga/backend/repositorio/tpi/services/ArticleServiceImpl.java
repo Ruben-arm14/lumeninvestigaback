@@ -65,24 +65,24 @@ public class ArticleServiceImpl implements ArticleService{
             articleDb.setData(articleFile.getBytes());
 
             // Extractor para el artículo de investigación
-            List<String> valueList = pdfAcademicExtractor.readArticleByBytes(articleFile.getBytes());
-            articleDb.getArticleDetail().setTitle(valueList.get(0));
-            articleDb.getArticleDetail().setAuthor(valueList.get(1));
+            List<String> articleList = pdfAcademicExtractor.readArticleByBytes(articleFile.getBytes());
+            List<String> fichaList = pdfAcademicExtractor.readFichaByBytes(fichaFile.getBytes());
+
+            articleDb.getArticleDetail().setTitle(
+                    articleList.get(0).equals("No encontrado") ? fichaList.get(0) : "No encontrado"
+            );
+            articleDb.getArticleDetail().setAuthor(articleList.get(1));
             //TODO: implementar la logica para obtener el asesor en el artículo de investigación.
             articleDb.getArticleDetail().setAdvisor("");
-            articleDb.getArticleDetail().setResume(valueList.get(2).replace("\r\n", ""));
-            articleDb.getArticleDetail().setKeywords(stringToSet(valueList.get(3)
-                    .replace("\r\n", "")
-                    .replace(".", "")
-                    )
-            );
-            List<String> valueList1 = pdfAcademicExtractor.readFichaByBytes(fichaFile.getBytes());
-            //TODO: Falta area, subArea, period(Consultarlo), ods, advisor. (Obtenerlo del ficha de investigación)
-            //Se realiza un split(",") separando usando de limitador el , y elegimos la posicion de cada palabra
-            articleDb.getArticleDetail().setArea(valueList1.get(2).split(",")[0].trim());
-            articleDb.getArticleDetail().setSubArea(valueList1.get(2).split(",")[1].trim());
+            articleDb.getArticleDetail().setResume(articleList.get(2));
+            articleDb.getArticleDetail().setKeywords(articleList.get(3));
+
+            // Área de la ficha
+
+            articleDb.getArticleDetail().setArea(fichaList.get(2).split(",")[0].trim());
+            articleDb.getArticleDetail().setSubArea(fichaList.get(2).split(",")[1].trim());
             //TODO: Revisar el atributo porque se puede agregar más de un ODS
-            articleDb.getArticleDetail().setODS(ODS_GOALS.FIRST);
+            articleDb.getArticleDetail().setODS(fichaList.get(3));
 
             articleRepository.save(articleDb);
         } catch (IOException e) {

@@ -1,10 +1,9 @@
 package org.lumeninvestiga.backend.repositorio.tpi.dto.response;
 
-public record ArticleDetail(
+public record ArticleDetailDTO(
         String area,
         String subArea,
         String period,
-        // El valor String del ODS_GOALS
         String ods,
         String title,
         String author,
