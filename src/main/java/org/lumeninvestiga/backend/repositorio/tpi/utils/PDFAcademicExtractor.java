@@ -56,7 +56,7 @@ public class PDFAcademicExtractor {
         Pattern pattern = Pattern.compile(regex, Pattern.CASE_INSENSITIVE | Pattern.DOTALL);
         Matcher matcher = pattern.matcher(text);
         if (matcher.find()) {
-            return matcher.group(1).trim();
+            return matcher.group(1).trim().replace("\r\n", "");
         }
         return "No encontrado";
     }
