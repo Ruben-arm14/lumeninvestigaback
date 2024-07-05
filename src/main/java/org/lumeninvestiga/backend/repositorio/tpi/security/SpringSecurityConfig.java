@@ -56,7 +56,6 @@ public class SpringSecurityConfig {
         return new String[]{
                 "/api/users", "/api/users/{id}",
                 "/api/reviews", "/api/reviews/{id}",
-                "/api/files", "/api/files/{id}",
                 "/api/folders", "/api/folders/{id}",
 
                 "/api/articles", "/api/articles/{name}",
@@ -67,7 +66,7 @@ public class SpringSecurityConfig {
 
     private String[] getPublicPostEndpoints() {
         return new String[]{
-                "/api/users", "/api/reviews", "/api/files", "/api/folders",
+                "/api/users", "/api/reviews", "/api/folders",
                 "/api/users/login",
 
                 "/api/articles/upload"
@@ -78,7 +77,6 @@ public class SpringSecurityConfig {
         return new String[]{
                 "/api/users", "/api/users/{user_id}",
                 "/api/reviews", "/api/reviews/{id}",
-                "/api/files", "/api/files/{id}",
                 "/api/folders", "/api/folders/{id}",
 
                 "/api/articles/{article_id}"
@@ -90,7 +88,6 @@ public class SpringSecurityConfig {
         return new String[]{
                 "/api/users", "/api/users/{id}",
                 "/api/reviews", "/api/reviews/{id}",
-                "/api/files", "/api/files/{id}",
                 "/api/folders", "/api/folders/{id}",
 
                 "/api/articles/id/{article_id}"

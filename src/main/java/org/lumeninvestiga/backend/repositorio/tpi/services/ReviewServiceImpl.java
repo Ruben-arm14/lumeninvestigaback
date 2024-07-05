@@ -7,6 +7,9 @@ import org.lumeninvestiga.backend.repositorio.tpi.dto.response.ReviewResponse;
 import org.lumeninvestiga.backend.repositorio.tpi.entities.data.Article;
 import org.lumeninvestiga.backend.repositorio.tpi.entities.user.Review;
 import org.lumeninvestiga.backend.repositorio.tpi.entities.user.User;
+import org.lumeninvestiga.backend.repositorio.tpi.exceptions.NotContentCommentException;
+import org.lumeninvestiga.backend.repositorio.tpi.exceptions.NotFoundResourceException;
+import org.lumeninvestiga.backend.repositorio.tpi.exceptions.ReferenceNotFoundException;
 import org.lumeninvestiga.backend.repositorio.tpi.repositories.ArticleRepository;
 import org.lumeninvestiga.backend.repositorio.tpi.repositories.ReviewRepository;
 import org.lumeninvestiga.backend.repositorio.tpi.repositories.UserRepository;
@@ -37,16 +40,12 @@ public class ReviewServiceImpl implements ReviewService{
         Optional<User> userOptional = userRepository.findById(userId);
         Optional<Article> articleOptional = articleRepository.findById(articleId);
         if(userOptional.isEmpty() && articleOptional.isEmpty()) {
-            //TODO: REFERENCE_NOTFOUND EXCEPTION
-            throw new RuntimeException();
+            throw new ReferenceNotFoundException("No se encontró referencia para el review");
         }
         if(request.comment().isBlank()) {
-            //TODO: NO_CONTENT_COMMENT_EXCEPTION
-            throw new RuntimeException();
+            throw new NotContentCommentException("No se encontró comentario en el review");
         }
         Review reviewRequest = new Review();
-        // Review tomamos sus FK y los setteamos con los id's del request
-        // cansiderar la logica de id's a los @PathVariable del controlador.
         reviewRequest.getUser().setId(userId);
         reviewRequest.getArticle().setId(articleId);
         reviewRequest.setComment(request.comment());
@@ -68,8 +67,7 @@ public class ReviewServiceImpl implements ReviewService{
     public Optional<ReviewResponse> getReviewById(Long id) {
         Optional<Review> reviewOptional = reviewRepository.findById(id);
         if(reviewOptional.isEmpty()) {
-            //TODO: NOTFOUND_RESOURCE_EXCEPTION
-            throw new RuntimeException();
+            throw new NotFoundResourceException("No se encontró el recurso solicitado");
         }
         return Optional.of(ReviewMapper.INSTANCE.toReviewResponse(reviewOptional.get()));
     }
@@ -80,8 +78,8 @@ public class ReviewServiceImpl implements ReviewService{
         reviewOptional.ifPresentOrElse(reviewDb -> {
             reviewDb.setComment(request.comment());
         },
-                //TODO: NOTFOUND_RESOURCE_EXCEPTION
-                () -> new RuntimeException());
+                () -> new NotFoundResourceException("No se encontró el recurso solicitado")
+        );
     }
 
     @Override

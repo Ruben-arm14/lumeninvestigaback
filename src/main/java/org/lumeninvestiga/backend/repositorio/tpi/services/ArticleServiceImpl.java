@@ -38,56 +38,50 @@ public class ArticleServiceImpl implements ArticleService{
     @Override
     @Transactional
     public Optional<ArticleResponse> saveArticle(List<MultipartFile> multipartFiles) {
-//        if (multipartFiles.size() <= 2 && !multipartFiles.isEmpty()) {
-//            throw new ResourceCountException("Se espera dos documentos");
-//        }
-        MultipartFile articleFile = multipartFiles.get(0);
-        MultipartFile fichaFile = multipartFiles.get(1);
+        validateFiles(multipartFiles);
 
-        // Validar el nombre del primer archivo (Artículo)
-        String articleFileName = articleFile.getOriginalFilename().toLowerCase();
-        if (!articleFileName.startsWith("articulo") && !articleFileName.startsWith("artículo")) {
-            throw new InvalidDocumentFormatException("Error en el formato del nombre de articulo");
+        MultipartFile articleFile = null;
+        MultipartFile fichaFile = null;
+
+        for (MultipartFile file : multipartFiles) {
+            String fileName = file.getOriginalFilename().toLowerCase();
+            if (fileName.startsWith("articulo") || fileName.startsWith("artículo")) {
+                articleFile = file;
+            } else if (fileName.startsWith("ficha")) {
+                fichaFile = file;
+            } else {
+                throw new InvalidDocumentFormatException("Formato de archivo no reconocido: " + fileName);
+            }
         }
 
-        // Validar el nombre del segundo archivo (Ficha)
-        String fichaFileName = fichaFile.getOriginalFilename().toLowerCase();
-        if (!fichaFileName.startsWith("ficha")) {
-            throw new InvalidDocumentFormatException("Error en el formato del nombre de ficha");
+        if (articleFile == null || fichaFile == null) {
+            throw new ResourceCountException("Se esperan dos documentos, uno de tipo artículo y otro de tipo ficha");
         }
+
         Article articleDb = new Article();
         try {
             articleDb.setName(articleFile.getOriginalFilename());
             articleDb.setSize(articleFile.getSize());
             articleDb.setCreatedDate(LocalDateTime.now());
             articleDb.setMimeType(articleFile.getContentType());
-            // No es necesario guardar el byte[]
             articleDb.setData(articleFile.getBytes());
 
-            // Extractor para el artículo de investigación
             List<String> articleList = pdfAcademicExtractor.readArticleByBytes(articleFile.getBytes());
             List<String> fichaList = pdfAcademicExtractor.readFichaByBytes(fichaFile.getBytes());
 
-            articleDb.getArticleDetail().setTitle(
-                    articleList.get(0).equals("No encontrado") ? fichaList.get(0) : "No encontrado"
-            );
+            articleDb.getArticleDetail().setTitle(getTitle(articleList, fichaList));
             articleDb.getArticleDetail().setAuthor(articleList.get(1));
-            //TODO: implementar la logica para obtener el asesor en el artículo de investigación.
-            articleDb.getArticleDetail().setAdvisor("");
+            articleDb.getArticleDetail().setAdvisor(""); // Implementar lógica para obtener el asesor
             articleDb.getArticleDetail().setResume(articleList.get(2));
             articleDb.getArticleDetail().setKeywords(articleList.get(3));
 
-            // Área de la ficha
-
-            articleDb.getArticleDetail().setArea(fichaList.get(2).split(",")[0].trim());
-            articleDb.getArticleDetail().setSubArea(fichaList.get(2).split(",")[1].trim());
-            //TODO: Revisar el atributo porque se puede agregar más de un ODS
+            articleDb.getArticleDetail().setArea(getArea(fichaList));
+            articleDb.getArticleDetail().setSubArea(getSubArea(fichaList));
             articleDb.getArticleDetail().setODS(fichaList.get(3));
 
             articleRepository.save(articleDb);
         } catch (IOException e) {
-            //TODO: Revisar comentario
-            throw new SavingErrorException("Error al guardar el articulo");
+            throw new SavingErrorException("Error al guardar el artículo", e);
         }
         return Optional.of(ArticleMapper.INSTANCE.toArticleResponse(articleDb));
     }
@@ -152,5 +146,23 @@ public class ArticleServiceImpl implements ArticleService{
         return Stream.of(keywords.split(","))
                 .map(String::trim) // Elimina espacios en blanco al principio y al final de cada palabra
                 .collect(Collectors.toSet());
+    }
+
+    private void validateFiles(List<MultipartFile> files) {
+        if (files.size() != 2 || files.isEmpty()) {
+            throw new ResourceCountException("Se esperan dos documentos");
+        }
+    }
+
+    private String getTitle(List<String> articleList, List<String> fichaList) {
+        return articleList.get(0).equals("No encontrado") ? fichaList.get(0) : "No encontrado";
+    }
+
+    private String getArea(List<String> fichaList) {
+        return fichaList.get(2).split(",")[0].trim();
+    }
+
+    private String getSubArea(List<String> fichaList) {
+        return fichaList.get(2).split(",")[1].trim();
     }
 }

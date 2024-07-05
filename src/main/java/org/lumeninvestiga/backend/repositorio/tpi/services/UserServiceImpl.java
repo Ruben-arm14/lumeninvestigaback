@@ -6,6 +6,8 @@ import org.lumeninvestiga.backend.repositorio.tpi.dto.request.UserRegistrationRe
 import org.lumeninvestiga.backend.repositorio.tpi.dto.request.UserUpdateRequest;
 import org.lumeninvestiga.backend.repositorio.tpi.dto.response.UserResponse;
 import org.lumeninvestiga.backend.repositorio.tpi.entities.user.User;
+import org.lumeninvestiga.backend.repositorio.tpi.exceptions.InvalidResourceException;
+import org.lumeninvestiga.backend.repositorio.tpi.exceptions.NotFoundResourceException;
 import org.lumeninvestiga.backend.repositorio.tpi.repositories.UserRepository;
 import org.lumeninvestiga.backend.repositorio.tpi.utils.Utility;
 import org.springframework.data.domain.PageRequest;
@@ -32,8 +34,7 @@ public class UserServiceImpl implements UserService{
     public Optional<UserResponse> saveUser(UserRegistrationRequest request) {
         Optional<User> userOptional = userRepository.findByEmailAddress(request.emailAddress());
         if(userOptional.isPresent()) {
-            //TODO: INVALID_RESOURCE_EXCEPTION
-            throw new RuntimeException();
+            throw new InvalidResourceException("Solicitud invalida");
         }
         User userRequest = new User();
         userRequest.getUserDetail().setName(request.name());
@@ -60,8 +61,7 @@ public class UserServiceImpl implements UserService{
     public Optional<UserResponse> getUserById(Long id) {
         Optional<User> userOptional = userRepository.findById(id);
         if(userOptional.isEmpty()) {
-            //TODO: NOTFOUND_RESOURCE_EXCEPTION
-            throw new RuntimeException();
+            throw new NotFoundResourceException("No se encontró el recurso solicitado");
         }
         return Optional.of(UserMapper.INSTANCE.toUserResponse(userOptional.get()));
     }
@@ -75,8 +75,8 @@ public class UserServiceImpl implements UserService{
             userDb.getUserDetail().setLastName(request.lastName());
             userDb.getUserDetail().setEmailAddress(request.emailAddress());
         },
-                //TODO: NOTFOUND_RESOURCE_EXCEPTION
-                () -> new RuntimeException());
+                () -> new NotFoundResourceException("No se encontró el recurso solicitado")
+        );
         return Optional.of(UserMapper.INSTANCE.toUserResponse(userOptional.get()));
     }
 
@@ -102,7 +102,7 @@ public class UserServiceImpl implements UserService{
         Optional<User> userOptional = userRepository.findByEmailAddress(request.email());
         if(userOptional.isEmpty()) {
             //TODO: NOTFOUND_RESOURCE EXCEPTION
-            throw new RuntimeException("Recurso no encontrado");
+            throw new NotFoundResourceException("No se encontró el recurso solicitado");
         }
         return passwordEncoder.matches(request.password(), userOptional.get().getUserDetail().getPassword());
     }

@@ -7,4 +7,8 @@ public class SavingErrorException extends RuntimeException{
     public SavingErrorException(String message) {
         super(message);
     }
+
+    public SavingErrorException(String message, Throwable cause) {
+        super(message, cause);
+    }
 }

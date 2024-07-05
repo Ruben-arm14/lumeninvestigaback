@@ -70,11 +70,4 @@ public class ArticleController {
         // Adjust to make searches from a frontend search component
         return ResponseEntity.status(HttpStatus.ACCEPTED).build();
     }
-
-//    @GetMapping("/search/all/{name}")
-//    public ResponseEntity<?> searchAllArticleByName(@PathVariable String name) {
-//        // TODO: Implement method in service layer to search articles by name
-//        // Adjust to make searches from a frontend search component
-//        return ResponseEntity.status(HttpStatus.ACCEPTED).build();
-//    }
 }

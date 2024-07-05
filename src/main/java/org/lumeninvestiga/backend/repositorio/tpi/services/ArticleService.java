@@ -1,6 +1,7 @@
 package org.lumeninvestiga.backend.repositorio.tpi.services;
 
 import org.lumeninvestiga.backend.repositorio.tpi.dto.response.ArticleResponse;
+import org.lumeninvestiga.backend.repositorio.tpi.entities.data.Article;
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.multipart.MultipartFile;
 
