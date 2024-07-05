@@ -14,9 +14,9 @@ import java.util.Objects;
 public class File extends StorableItem {
 
     @JsonIgnore
-    @Column(nullable = false, updatable = false, columnDefinition = "LONGBLOB")
+    @Column(updatable = false, columnDefinition = "LONGBLOB")
     private byte[] data;
-    @Column(name = "mime_type", nullable = false)
+    @Column(name = "mime_type")
     private String mimeType;
     @ManyToOne(targetEntity = Folder.class)
     @JsonBackReference

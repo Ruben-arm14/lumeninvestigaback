@@ -10,8 +10,8 @@ import org.mapstruct.factory.Mappers;
 public interface ReviewMapper {
     ReviewMapper INSTANCE = Mappers.getMapper(ReviewMapper.class);
 
-    @Mapping(source = "user.userDetail.name", target = "name")
-    @Mapping(source = "comment", target = "comment")
+    @Mapping(target = "name", expression = "java(review.getUser().getUserDetail().getName())")
+    @Mapping(target = "comment", source = "comment")
     ReviewResponse toReviewResponse(Review review);
 
 //    @Mapping(source = "user.id", target = "userId")

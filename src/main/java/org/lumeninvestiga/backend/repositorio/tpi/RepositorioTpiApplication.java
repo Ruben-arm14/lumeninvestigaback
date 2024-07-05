@@ -2,7 +2,6 @@ package org.lumeninvestiga.backend.repositorio.tpi;
 
 import org.lumeninvestiga.backend.repositorio.tpi.entities.data.Article;
 import org.lumeninvestiga.backend.repositorio.tpi.entities.data.ArticleDetail;
-import org.lumeninvestiga.backend.repositorio.tpi.entities.data.File;
 import org.lumeninvestiga.backend.repositorio.tpi.entities.data.Folder;
 import org.lumeninvestiga.backend.repositorio.tpi.entities.user.Review;
 import org.lumeninvestiga.backend.repositorio.tpi.entities.user.Role;
@@ -95,7 +94,7 @@ public class RepositorioTpiApplication {
 
 			for(Article item : getData()){
 				articleRepository.save(item);
-				System.out.println("Articulo: " + item.getName() + " guardado." );
+				System.out.println("Articulo: " + item.getArticleDetail().getTitle() + " guardado." );
 			}
 		};
 	}
