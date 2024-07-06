@@ -9,15 +9,20 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import static org.lumeninvestiga.backend.repositorio.tpi.utils.Utility.calculatePeriod;
+
 @Component
 public class PDFAcademicExtractor {
     public PDFAcademicExtractor() {}
 
     public List<String> readArticleByBytes(byte[] pdfBytes) throws IOException {
-        String text = extractTextFromPDF(pdfBytes, 3, 3);
+        String text = extractTextFromPDF(pdfBytes, 1, 2);
         return extractArticleValues(text);
     }
 
@@ -38,9 +43,11 @@ public class PDFAcademicExtractor {
     private List<String> extractArticleValues(String text) {
         String title = extractData(text, "^([A-Z\\s]+?)\\bAutor(es)\\b\n");
         String author = extractData(text, "(?i)Autor\\(es\\)?\\s*:?\\s*(.*?)(?=\\n\\d|\\n\\s*$)");
+        String advisor = extractData(text, "(?s)Asesor\\s*\n(.+?)(?=\n|$)");
+        String period = extractData(text, "(?s)(\\d{2}/\\d{2}/\\d{4})");
         String summary = extractData(text, "Resumen\\s*:([\\s\\S]+?)(?=Palabras clave?\\s*:|$)");
         String keywords = extractData(text, "Palabras clave\\s*:([\\s\\S]+?)(?=Abstract?\\s*:|$)");
-        return List.of(title, author, summary, keywords);
+        return List.of(title, author, advisor, calculatePeriod(period), summary, keywords);
     }
 
     private List<String> extractFichaValues(String text) {
@@ -62,10 +69,17 @@ public class PDFAcademicExtractor {
     }
 
     private String extractSecondAndThirdWords(String text) {
-        String[] words = text.split("->");
+        if(text.contains("->")) {
+            String[] words = text.split("->");
+            if (words.length >= 3) {
+                return words[1].trim() + ", " + words[2].trim();
+            }
+            throw new IllegalArgumentException("Texto no contiene suficientes palabras separadas por '->'");
+        }
+        String[] words = text.split(",");
         if (words.length >= 3) {
             return words[1].trim() + ", " + words[2].trim();
         }
-        throw new IllegalArgumentException("Texto no contiene suficientes palabras separadas por '->'");
+        throw new IllegalArgumentException("Texto no contiene suficientes palabras separadas por ','");
     }
 }
