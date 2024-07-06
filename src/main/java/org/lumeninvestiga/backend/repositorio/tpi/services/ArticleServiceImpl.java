@@ -3,7 +3,6 @@ package org.lumeninvestiga.backend.repositorio.tpi.services;
 import org.lumeninvestiga.backend.repositorio.tpi.dto.mapper.ArticleMapper;
 import org.lumeninvestiga.backend.repositorio.tpi.dto.response.ArticleResponse;
 import org.lumeninvestiga.backend.repositorio.tpi.entities.data.Article;
-import org.lumeninvestiga.backend.repositorio.tpi.entities.data.ODS_GOALS;
 import org.lumeninvestiga.backend.repositorio.tpi.exceptions.InvalidDocumentFormatException;
 import org.lumeninvestiga.backend.repositorio.tpi.exceptions.NotFoundResourceException;
 import org.lumeninvestiga.backend.repositorio.tpi.exceptions.ResourceCountException;
@@ -71,9 +70,10 @@ public class ArticleServiceImpl implements ArticleService{
 
             articleDb.getArticleDetail().setTitle(getTitle(articleList, fichaList));
             articleDb.getArticleDetail().setAuthor(articleList.get(1));
-            articleDb.getArticleDetail().setAdvisor(""); // Implementar lógica para obtener el asesor
-            articleDb.getArticleDetail().setResume(articleList.get(2));
-            articleDb.getArticleDetail().setKeywords(articleList.get(3));
+            articleDb.getArticleDetail().setAdvisor(articleList.get(2));
+            articleDb.getArticleDetail().setPeriod(articleList.get(3));
+            articleDb.getArticleDetail().setResume(articleList.get(4));
+            articleDb.getArticleDetail().setKeywords(articleList.get(5));
 
             articleDb.getArticleDetail().setArea(getArea(fichaList));
             articleDb.getArticleDetail().setSubArea(getSubArea(fichaList));
