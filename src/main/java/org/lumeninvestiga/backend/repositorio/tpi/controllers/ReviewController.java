@@ -1,5 +1,6 @@
 package org.lumeninvestiga.backend.repositorio.tpi.controllers;
 
+import jakarta.validation.Valid;
 import org.lumeninvestiga.backend.repositorio.tpi.dto.request.ReviewPostRequest;
 import org.lumeninvestiga.backend.repositorio.tpi.dto.request.ReviewUpdateRequest;
 import org.lumeninvestiga.backend.repositorio.tpi.services.ReviewService;
@@ -22,7 +23,7 @@ public class ReviewController {
     public ResponseEntity<?> createReview(
             @PathVariable("user_id") Long userId,
             @PathVariable("article_id") Long articleId,
-            @RequestBody ReviewPostRequest request) {
+            @Valid @RequestBody ReviewPostRequest request) {
         return ResponseEntity.ok(reviewService.saveReview(userId, articleId, request));
     }
 
@@ -39,7 +40,9 @@ public class ReviewController {
     //TODO: Revisar método.
     //NOTE: Esta lógica es para modificar el review dentro del contenido del artículo.
     @PutMapping("/{user_id}/articles/{article_id}/reviews/{review_id}")
-    public ResponseEntity<?> updateReviewById(@PathVariable Long id, @RequestBody ReviewUpdateRequest request) {
+    public ResponseEntity<?> updateReviewById(
+            @PathVariable Long id,
+            @Valid @RequestBody ReviewUpdateRequest request) {
         reviewService.updateReviewComment(id, request);
         return ResponseEntity.status(HttpStatus.ACCEPTED).build();
     }

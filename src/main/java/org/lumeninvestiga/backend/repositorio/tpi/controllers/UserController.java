@@ -1,5 +1,6 @@
 package org.lumeninvestiga.backend.repositorio.tpi.controllers;
 
+import jakarta.validation.Valid;
 import org.lumeninvestiga.backend.repositorio.tpi.dto.request.UserLoginRequest;
 import org.lumeninvestiga.backend.repositorio.tpi.dto.request.UserRegistrationRequest;
 import org.lumeninvestiga.backend.repositorio.tpi.dto.request.UserUpdateRequest;
@@ -23,7 +24,7 @@ public class UserController {
     }
 
     @PostMapping
-    public ResponseEntity<?> createUser(@RequestBody UserRegistrationRequest request) {
+    public ResponseEntity<?> createUser(@Valid @RequestBody UserRegistrationRequest request) {
         Optional<UserResponse> response = userService.saveUser(request);
         if(response.isEmpty()) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
@@ -32,7 +33,7 @@ public class UserController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<?> loginUser(@RequestBody UserLoginRequest request) {
+    public ResponseEntity<?> loginUser(@Valid @RequestBody UserLoginRequest request) {
         if(!userService.loginSession(request)) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
         }
@@ -65,7 +66,7 @@ public class UserController {
     @PutMapping("/{user_id}")
     public ResponseEntity<?> updateUserById(
             @PathVariable("user_id") Long userId,
-            @RequestBody UserUpdateRequest request) {
+            @Valid @RequestBody UserUpdateRequest request) {
         Optional<UserResponse> response = userService.updateUserById(userId, request);
         if(response.isEmpty()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();

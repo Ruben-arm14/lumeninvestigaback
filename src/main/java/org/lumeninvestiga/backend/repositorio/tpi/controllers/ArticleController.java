@@ -1,5 +1,6 @@
 package org.lumeninvestiga.backend.repositorio.tpi.controllers;
 
+import jakarta.validation.Valid;
 import org.lumeninvestiga.backend.repositorio.tpi.dto.request.ArticleUpdateRequest;
 import org.lumeninvestiga.backend.repositorio.tpi.services.ArticleService;
 import org.springframework.data.domain.Pageable;
@@ -26,7 +27,9 @@ public class ArticleController {
     }
 
     @GetMapping("/search")
-    public ResponseEntity<?> readAllArticlesByKeyword(@PageableDefault Pageable pageable, @RequestParam String keyword) {
+    public ResponseEntity<?> readAllArticlesByKeyword(
+            @PageableDefault Pageable pageable,
+            @RequestParam String keyword) {
         return ResponseEntity.status(HttpStatus.OK).body(articleService.getAllArticlesByKeyword(pageable, keyword));
     }
 
@@ -52,7 +55,7 @@ public class ArticleController {
     @PutMapping("/id/{article_id}")
     public ResponseEntity<?> updateArticleById(
             @PathVariable("article_id") Long articleId,
-            @RequestParam ArticleUpdateRequest request) {
+            @Valid @RequestParam ArticleUpdateRequest request) {
         // TODO: Implement method in service layer to update article content
         return ResponseEntity.status(HttpStatus.ACCEPTED).build();
     }
