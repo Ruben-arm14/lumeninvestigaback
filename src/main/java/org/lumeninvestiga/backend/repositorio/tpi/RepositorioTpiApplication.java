@@ -81,9 +81,6 @@ public class RepositorioTpiApplication {
 		review.setUser(user);
 		user.addReview(review);
 
-		//TODO: crear el método para poblar la BD con list<Article>
-
-
 		return args -> {
 			userRepository.save(user);
 			System.out.println("Usuario guardado " + user.getUserDetail().getName());
