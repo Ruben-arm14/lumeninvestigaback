@@ -32,9 +32,9 @@ public class ReviewController {
         return ResponseEntity.status(HttpStatus.OK).body(reviewService.getAllReviews(pageable));
     }
 
-    @GetMapping("/{review_id}")
-    public ResponseEntity<?> readReviewById(@PathVariable("review_id") Long reviewId) {
-        return ResponseEntity.ok(reviewService.getReviewById(reviewId));
+    @GetMapping("/{article_id}")
+    public ResponseEntity<?> readReviewsByArticleId(@PathVariable("article_id") Long reviewId) {
+        return ResponseEntity.ok(reviewService.getReviewsByArticleId(reviewId));
     }
 
     //TODO: Revisar método.

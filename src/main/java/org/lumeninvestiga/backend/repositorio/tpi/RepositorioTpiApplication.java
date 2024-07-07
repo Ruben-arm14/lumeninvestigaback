@@ -16,6 +16,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.io.IOException;
 import java.security.SecureRandom;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -32,7 +33,7 @@ public class RepositorioTpiApplication {
 	@Bean
 	CommandLineRunner commandLineRunner(UserRepository userRepository, ArticleRepository articleRepository,
 										FolderRepository folderRepository, RoleRepository roleRepository,
-										PasswordEncoder passwordEncoder) throws IOException {
+										ReviewRepository reviewRepository, PasswordEncoder passwordEncoder) throws IOException {
 		Role roleAdmin = new Role("ROLE_ADMIN");
 		Role roleUser = new Role("ROLE_USER");
 		Role roleStudent = new Role("ROLE_STUDENT");
@@ -45,11 +46,6 @@ public class RepositorioTpiApplication {
 
 		User user = new User();
 		User user1 = new User();
-
-		Folder folder = new Folder();
-		folder.setName("Trabajos");
-		folder.setShared(false);
-		folder.setUser(user);
 
 		UserDetail userD = new UserDetail();
 		userD.setName("Pedro");
@@ -76,23 +72,57 @@ public class RepositorioTpiApplication {
 
 		user1.addRole(roleUser);
 
+		userRepository.save(user);
+		userRepository.save(user1);
+
+		ArticleDetail articleDetail = new ArticleDetail();
+		articleDetail.setTitle("MachineLearning");
+		articleDetail.setAuthor("Juan pedro");
+		articleDetail.setAdvisor("Roberto Rojas");
+		articleDetail.setPeriod("2018-2");
+		articleDetail.setODS("1");
+		articleDetail.setKeywords("IA, MachineLearning, IOT");
+		articleDetail.setArea("IA");
+		articleDetail.setSubArea("Supervisado");
+		articleDetail.setResume("Este trabajo trata sobre la investigacion de modelos de machine learning...");
+
+
+		Article article = new Article();
+		article.setUser(user);
+		article.setArticleDetail(articleDetail);
+
+		articleRepository.save(article);
+
 		Review review = new Review();
 		review.setComment("Muy buen trabajo, saludos");
 		review.setUser(user);
+		review.setArticle(article);
 		user.addReview(review);
 
+		reviewRepository.save(review);
+
+		Review review1 = new Review();
+		review1.setComment("Muy buen trabajo me encantó");
+		review1.setUser(user1);
+		review1.setArticle(article);
+		user1.addReview(review1);
+
+		reviewRepository.save(review1);
+
+
+		Review review2 = new Review();
+		review2.setComment("Ya he visto este trabajo en otro lado, lo reportaré");
+
+		for(Article item : getData()){
+			item.setUser(user);
+			articleRepository.save(item);
+			System.out.println("Articulo: " + item.getArticleDetail().getTitle() + " guardado." );
+		}
+
 		return args -> {
-			userRepository.save(user);
 			System.out.println("Usuario guardado " + user.getUserDetail().getName());
-			folderRepository.save(folder);
 
-			userRepository.save(user1);
 			System.out.println("Usuario guardado " + user1.getUserDetail().getName());
-
-			for(Article item : getData()){
-				articleRepository.save(item);
-				System.out.println("Articulo: " + item.getArticleDetail().getTitle() + " guardado." );
-			}
 		};
 	}
 

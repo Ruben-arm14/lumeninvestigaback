@@ -64,6 +64,19 @@ public class ReviewServiceImpl implements ReviewService{
 
     @Override
     @Transactional(readOnly = true)
+    public List<ReviewResponse> getReviewsByArticleId(Long articleId) {
+        // Asumiendo que tenemos un método para obtener un artículo por su ID
+        Article article = articleRepository.findById(articleId)
+                .orElseThrow(() -> new NotFoundResourceException("Artículo no encontrado"));
+
+        // Obtenemos la lista de reviews del artículo
+        return article.getReviews().stream()
+                .map(ReviewMapper.INSTANCE::toReviewResponse)
+                .toList();
+    }
+
+    @Override
+    @Transactional(readOnly = true)
     public Optional<ReviewResponse> getReviewById(Long id) {
         Optional<Review> reviewOptional = reviewRepository.findById(id);
         if(reviewOptional.isEmpty()) {

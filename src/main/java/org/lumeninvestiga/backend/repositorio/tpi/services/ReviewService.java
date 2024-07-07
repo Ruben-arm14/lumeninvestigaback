@@ -12,6 +12,7 @@ import java.util.Optional;
 public interface ReviewService {
     Optional<ReviewResponse> saveReview(Long userId, Long articleId,ReviewPostRequest request);
     List<ReviewResponse> getAllReviews(Pageable pageable);
+    List<ReviewResponse> getReviewsByArticleId(Long articleId);
     Optional<ReviewResponse> getReviewById(Long id);
     void updateReviewComment(Long id, ReviewUpdateRequest request);
     void deleteReviewById(Long id);

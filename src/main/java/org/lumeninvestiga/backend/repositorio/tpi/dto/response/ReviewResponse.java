@@ -4,7 +4,7 @@ import java.time.LocalDateTime;
 
 public record ReviewResponse(
         String name,
-        //LocalDateTime createdDate,
+        LocalDateTime createdDate,
         String comment
 ) {
 }

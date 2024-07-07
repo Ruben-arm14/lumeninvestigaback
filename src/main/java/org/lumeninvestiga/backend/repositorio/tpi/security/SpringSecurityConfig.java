@@ -55,7 +55,7 @@ public class SpringSecurityConfig {
     private String[] getPublicGetEndpoints() {
         return new String[]{
                 "/api/users", "/api/users/{id}",
-                "/api/reviews", "/api/reviews/{id}",
+                "/api/reviews", "/api/reviews/{article_id}",
                 "/api/folders", "/api/folders/{id}",
 
                 "/api/articles", "/api/articles/{name}",

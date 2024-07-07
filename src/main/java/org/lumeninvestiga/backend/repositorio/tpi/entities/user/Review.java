@@ -58,6 +58,10 @@ public class Review {
         this.comment = comment;
     }
 
+    public LocalDateTime getCreatedDate() {
+        return createdDate;
+    }
+
     public User getUser() {
         return user;
     }

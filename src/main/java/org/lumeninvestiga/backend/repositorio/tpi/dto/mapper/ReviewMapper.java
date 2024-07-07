@@ -10,12 +10,9 @@ import org.mapstruct.factory.Mappers;
 public interface ReviewMapper {
     ReviewMapper INSTANCE = Mappers.getMapper(ReviewMapper.class);
 
+    //TODO: Agregar la fecha de creacion del review
     @Mapping(target = "name", expression = "java(review.getUser().getUserDetail().getName())")
+    @Mapping(target = "createdDate", expression = "java(review.getCreatedDate())")
     @Mapping(target = "comment", source = "comment")
     ReviewResponse toReviewResponse(Review review);
-
-//    @Mapping(source = "user.id", target = "userId")
-//    @Mapping(source = "article.id", target = "articleId")
-//    @Mapping(source = "comment", target = "comment")
-//    ReviewResponse toReviewResponse(Review review);
 }
