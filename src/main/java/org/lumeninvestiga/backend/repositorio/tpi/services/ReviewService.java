@@ -10,7 +10,8 @@ import java.util.List;
 import java.util.Optional;
 // C R U D
 public interface ReviewService {
-    Optional<ReviewResponse> saveReview(Long userId, Long articleId,ReviewPostRequest request);
+    Optional<ReviewResponse> saveReview(Long articleId, ReviewPostRequest request);
+    //TODO: Considerar devolver un Page<ReviewResponse>
     List<ReviewResponse> getAllReviews(Pageable pageable);
     List<ReviewResponse> getReviewsByArticleId(Long articleId);
     Optional<ReviewResponse> getReviewById(Long id);

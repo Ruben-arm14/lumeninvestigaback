@@ -20,9 +20,6 @@ import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 @Service
 public class ArticleServiceImpl implements ArticleService{
@@ -136,16 +133,6 @@ public class ArticleServiceImpl implements ArticleService{
     @Transactional
     public boolean existArticleById(Long id) {
         return articleRepository.existsById(id);
-    }
-
-    private Set<String> stringToSet(String keywords) {
-        if (keywords == null || keywords.isBlank()) {
-            //TODO:
-            throw new RuntimeException();
-        }
-        return Stream.of(keywords.split(","))
-                .map(String::trim) // Elimina espacios en blanco al principio y al final de cada palabra
-                .collect(Collectors.toSet());
     }
 
     private void validateFiles(List<MultipartFile> files) {

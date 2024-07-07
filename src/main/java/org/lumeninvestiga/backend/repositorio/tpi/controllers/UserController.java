@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("/api/users")
+@RequestMapping("/api/v1/users")
 public class UserController {
     private final UserService userService;
 
@@ -23,7 +23,7 @@ public class UserController {
         this.userService = userService;
     }
 
-    @PostMapping
+    @PostMapping("/register")
     public ResponseEntity<?> createUser(@Valid @RequestBody UserRegistrationRequest request) {
         Optional<UserResponse> response = userService.saveUser(request);
         if(response.isEmpty()) {
@@ -54,6 +54,7 @@ public class UserController {
         return ResponseEntity.status(HttpStatus.ACCEPTED).body(response);
     }
 
+    //TODO: Considerar eliminarla es igual al anterior.
     @GetMapping("/{user_id}/profile")
     public ResponseEntity<?> readUserProfile(@PathVariable("user_id") Long userId) {
         Optional<UserResponse> response = userService.getUserById(userId);

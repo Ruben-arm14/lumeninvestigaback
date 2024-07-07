@@ -11,7 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/api/reviews")
+@RequestMapping("/api/v1")
 public class ReviewController {
     private final ReviewService reviewService;
 
@@ -19,15 +19,14 @@ public class ReviewController {
         this.reviewService = reviewService;
     }
 
-    @PostMapping("/{user_id}/articles/{article_id}")
+    @PostMapping("/articles/{article_id}")
     public ResponseEntity<?> createReview(
-            @PathVariable("user_id") Long userId,
             @PathVariable("article_id") Long articleId,
             @Valid @RequestBody ReviewPostRequest request) {
-        return ResponseEntity.ok(reviewService.saveReview(userId, articleId, request));
+        return ResponseEntity.ok(reviewService.saveReview(articleId, request));
     }
 
-    @GetMapping
+    @GetMapping("/reviews")
     public ResponseEntity<?> readReviews(@PageableDefault Pageable pageable) {
         return ResponseEntity.status(HttpStatus.OK).body(reviewService.getAllReviews(pageable));
     }
@@ -37,9 +36,7 @@ public class ReviewController {
         return ResponseEntity.ok(reviewService.getReviewsByArticleId(reviewId));
     }
 
-    //TODO: Revisar método.
-    //NOTE: Esta lógica es para modificar el review dentro del contenido del artículo.
-    @PutMapping("/{user_id}/articles/{article_id}/reviews/{review_id}")
+    @PutMapping("/articles/{article_id}/{review_id}")
     public ResponseEntity<?> updateReviewById(
             @PathVariable Long id,
             @Valid @RequestBody ReviewUpdateRequest request) {

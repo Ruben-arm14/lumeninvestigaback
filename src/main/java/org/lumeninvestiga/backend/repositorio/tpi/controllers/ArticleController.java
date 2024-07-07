@@ -13,7 +13,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/articles")
+@RequestMapping("/api/v1/articles")
 public class ArticleController {
     private final ArticleService articleService;
 
@@ -47,30 +47,31 @@ public class ArticleController {
         return ResponseEntity.status(HttpStatus.FOUND).body(articleService.getArticleByName(name));
     }
 
-    @GetMapping("/id/{article_id}")
+    @GetMapping("/{article_id}")
     public ResponseEntity<?> readArticleById(@PathVariable("article_id") Long articleId) {
         return ResponseEntity.status(HttpStatus.ACCEPTED).body(articleService.getArticleById(articleId));
     }
 
-    @PutMapping("/id/{article_id}")
+    @PutMapping("/{article_id}")
     public ResponseEntity<?> updateArticleById(
             @PathVariable("article_id") Long articleId,
+            //TODO: terminar de redactar el DTO
             @Valid @RequestParam ArticleUpdateRequest request) {
         // TODO: Implement method in service layer to update article content
         return ResponseEntity.status(HttpStatus.ACCEPTED).build();
     }
 
-    @DeleteMapping("/id/{article_id}")
+    @DeleteMapping("/{article_id}")
     public ResponseEntity<?> deleteArticleById(@PathVariable("article_id") Long articleId){
         articleService.deleteArticleById(articleId);
         return ResponseEntity.status(HttpStatus.ACCEPTED).build();
     }
 
     // Consider removing this method if search functionality is implemented differently.
-    @GetMapping("/search/name/{name}")
-    public ResponseEntity<?> searchArticleByName(@PathVariable String name) {
-        // TODO: Implement method in service layer to search article by name
-        // Adjust to make searches from a frontend search component
-        return ResponseEntity.status(HttpStatus.ACCEPTED).build();
-    }
+//    @GetMapping("/search/name/{name}")
+//    public ResponseEntity<?> searchArticleByName(@PathVariable String name) {
+//        // TODO: Implement method in service layer to search article by name
+//        // Adjust to make searches from a frontend search component
+//        return ResponseEntity.status(HttpStatus.ACCEPTED).build();
+//    }
 }

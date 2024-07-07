@@ -36,8 +36,9 @@ public class ReviewServiceImpl implements ReviewService{
 
     @Override
     @Transactional
-    public Optional<ReviewResponse> saveReview(Long userId, Long articleId, ReviewPostRequest request) {
-        Optional<User> userOptional = userRepository.findById(userId);
+    public Optional<ReviewResponse> saveReview(Long articleId, ReviewPostRequest request) {
+        //TODO: Actualizar lógica una vez se tenga la autenticación JWT.
+        Optional<User> userOptional = userRepository.findById(1L);
         Optional<Article> articleOptional = articleRepository.findById(articleId);
         if(userOptional.isEmpty() && articleOptional.isEmpty()) {
             throw new ReferenceNotFoundException("No se encontró referencia para el review");
@@ -46,7 +47,7 @@ public class ReviewServiceImpl implements ReviewService{
             throw new NotContentCommentException("No se encontró comentario en el review");
         }
         Review reviewRequest = new Review();
-        reviewRequest.getUser().setId(userId);
+        reviewRequest.getUser().setId(1L);
         reviewRequest.getArticle().setId(articleId);
         reviewRequest.setComment(request.comment());
         reviewRepository.save(reviewRequest);
@@ -65,7 +66,6 @@ public class ReviewServiceImpl implements ReviewService{
     @Override
     @Transactional(readOnly = true)
     public List<ReviewResponse> getReviewsByArticleId(Long articleId) {
-        // Asumiendo que tenemos un método para obtener un artículo por su ID
         Article article = articleRepository.findById(articleId)
                 .orElseThrow(() -> new NotFoundResourceException("Artículo no encontrado"));
 
