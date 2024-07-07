@@ -1,6 +1,6 @@
 # LumenInvestiga Backend
 
-Este repositorio contiene el código backend para LumenInvestiga, una aplicación web diseñada para gestionar un repositorio de trabajos para el curso de Taller de Propuestas de Investigación (TPI) en la Universidad de Lima.
+Este repositorio aún en desarrollo contiene el código backend para LumenInvestiga, una aplicación web diseñada para gestionar un repositorio de trabajos para el curso de Taller de Propuestas de Investigación (TPI) en la Universidad de Lima.
 
 ## Descripción del Proyecto
 
@@ -28,6 +28,7 @@ LumenInvestiga tiene como objetivo principal facilitar la gestión, almacenamien
 
 ## Tecnologías Utilizadas
 
-- Java Spring Boot
+- Java
+- Spring Boot
 - MySQL
 - Apache PDFBox
