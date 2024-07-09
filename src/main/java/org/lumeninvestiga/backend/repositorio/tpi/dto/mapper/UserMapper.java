@@ -13,7 +13,7 @@ public interface UserMapper {
 
     @Mapping(source = "userDetail.name", target = "name")
     @Mapping(source = "userDetail.lastName", target = "lastName")
-    @Mapping(source = "userDetail.code", target = "code")
+    @Mapping(source = "username", target = "username")
     @Mapping(source = "userDetail.emailAddress", target = "emailAddress")
     UserResponse toUserResponse(User user);
 }

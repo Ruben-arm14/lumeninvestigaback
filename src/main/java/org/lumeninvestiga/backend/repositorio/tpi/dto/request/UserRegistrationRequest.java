@@ -11,7 +11,7 @@ public record UserRegistrationRequest(
         @NotBlank(message = "Last name cannot be blank")
         String lastName,
         @Size(min = 0, max = 8)
-        String code,
+        String username,
         @Email(message = "Invalid email address")
         String emailAddress,
         @Size(min = 8, message = "Password must be at least 8 characters long")
