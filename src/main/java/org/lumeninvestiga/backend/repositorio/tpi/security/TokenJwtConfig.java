@@ -1,7 +1,5 @@
 package org.lumeninvestiga.backend.repositorio.tpi.security;
 
-import javax.crypto.SecretKey;
-
 public class TokenJwtConfig {
     //public static final SecretKey SECRET_KEY = Jwts.SIG.HS256.key().build();
     public static final String PREFIX_TOKEN = "Bearer ";
