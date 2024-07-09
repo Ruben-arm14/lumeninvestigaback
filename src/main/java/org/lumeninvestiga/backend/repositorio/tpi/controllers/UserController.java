@@ -23,23 +23,6 @@ public class UserController {
         this.userService = userService;
     }
 
-    @PostMapping("/register")
-    public ResponseEntity<?> createUser(@Valid @RequestBody UserRegistrationRequest request) {
-        Optional<UserResponse> response = userService.saveUser(request);
-        if(response.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
-        }
-        return ResponseEntity.status(HttpStatus.CREATED).build();
-    }
-
-    @PostMapping("/login")
-    public ResponseEntity<?> loginUser(@Valid @RequestBody UserLoginRequest request) {
-        if(!userService.loginSession(request)) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
-        }
-        return ResponseEntity.status(HttpStatus.ACCEPTED).build();
-    }
-
     @GetMapping()
     public ResponseEntity<?> readUsers(@PageableDefault Pageable pageable) {
         return ResponseEntity.status(HttpStatus.ACCEPTED).body(userService.getAllUsers(pageable));

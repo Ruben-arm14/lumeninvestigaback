@@ -2,9 +2,7 @@ package org.lumeninvestiga.backend.repositorio.tpi;
 
 import org.lumeninvestiga.backend.repositorio.tpi.entities.data.Article;
 import org.lumeninvestiga.backend.repositorio.tpi.entities.data.ArticleDetail;
-import org.lumeninvestiga.backend.repositorio.tpi.entities.data.Folder;
 import org.lumeninvestiga.backend.repositorio.tpi.entities.user.Review;
-import org.lumeninvestiga.backend.repositorio.tpi.entities.user.Role;
 import org.lumeninvestiga.backend.repositorio.tpi.entities.user.User;
 import org.lumeninvestiga.backend.repositorio.tpi.entities.user.UserDetail;
 import org.lumeninvestiga.backend.repositorio.tpi.repositories.*;
@@ -16,7 +14,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.io.IOException;
 import java.security.SecureRandom;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -32,27 +29,29 @@ public class RepositorioTpiApplication {
 
 	@Bean
 	CommandLineRunner commandLineRunner(UserRepository userRepository, ArticleRepository articleRepository,
-										FolderRepository folderRepository, RoleRepository roleRepository,
-										ReviewRepository reviewRepository, PasswordEncoder passwordEncoder) throws IOException {
-		Role roleAdmin = new Role("ROLE_ADMIN");
-		Role roleUser = new Role("ROLE_USER");
-		Role roleStudent = new Role("ROLE_STUDENT");
-		Role roleAdvisor = new Role("ROLE_ADVISOR");
+										FolderRepository folderRepository, ReviewRepository reviewRepository,
+										PasswordEncoder passwordEncoder) throws IOException {
+//		Role roleAdmin = new Role("ROLE_ADMIN");
+//		Role roleUser = new Role("ROLE_USER");
+//		Role roleStudent = new Role("ROLE_STUDENT");
+//		Role roleAdvisor = new Role("ROLE_ADVISOR");
 
-		roleRepository.save(roleAdmin);
-		roleRepository.save(roleUser);
-		roleRepository.save(roleStudent);
-		roleRepository.save(roleAdvisor);
+//		roleRepository.save(roleAdmin);
+//		roleRepository.save(roleUser);
+//		roleRepository.save(roleStudent);
+//		roleRepository.save(roleAdvisor);
 
 		User user = new User();
+		user.setUsername("20114234");
+		user.setPassword("1234");
 		User user1 = new User();
+		user1.setUsername("20223412");
+		user1.setPassword("nosequeponer");
 
 		UserDetail userD = new UserDetail();
 		userD.setName("Pedro");
-		userD.setCode("20114234");
 		userD.setLastName("Sanchez");
 		userD.setEmailAddress("1234@example.com");
-		userD.setPassword(passwordEncoder.encode("1234"));
 
 		userD.setUser(user);
 		user.setUserDetail(userD);
@@ -60,17 +59,10 @@ public class RepositorioTpiApplication {
 		UserDetail userD1 = new UserDetail();
 		userD1.setName("Juan");
 		userD1.setLastName("Rodriguez");
-		userD1.setCode("20223412");
 		userD1.setEmailAddress("12341234@example.com");
-		userD1.setPassword(passwordEncoder.encode("nosequeponer"));
 
 		userD1.setUser(user1);
 		user1.setUserDetail(userD1);
-
-		user.addRole(roleAdmin);
-		user.addRole(roleUser);
-
-		user1.addRole(roleUser);
 
 		userRepository.save(user);
 		userRepository.save(user1);

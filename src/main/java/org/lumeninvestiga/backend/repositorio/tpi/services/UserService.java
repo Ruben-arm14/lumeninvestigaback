@@ -17,7 +17,4 @@ public interface UserService {
     Optional<UserResponse> updateUserById(Long id, UserUpdateRequest request);
     boolean deleteUserById(Long id);
     boolean existUserById(Long id);
-
-    //Utilitarios
-    boolean loginSession(UserLoginRequest request);
 }

@@ -22,11 +22,9 @@ import java.util.Optional;
 @Service
 public class UserServiceImpl implements UserService{
     private final UserRepository userRepository;
-    private final PasswordEncoder passwordEncoder;
 
-    public UserServiceImpl(UserRepository userRepository, PasswordEncoder passwordEncoder) {
+    public UserServiceImpl(UserRepository userRepository) {
         this.userRepository = userRepository;
-        this.passwordEncoder = passwordEncoder;
     }
 
     @Override
@@ -37,11 +35,11 @@ public class UserServiceImpl implements UserService{
             throw new InvalidResourceException("Solicitud invalida");
         }
         User userRequest = new User();
+        userRequest.setUsername(request.username());
+        userRequest.setPassword(request.password());
         userRequest.getUserDetail().setName(request.name());
         userRequest.getUserDetail().setLastName(request.lastName());
-        userRequest.getUserDetail().setCode(request.code());
         userRequest.getUserDetail().setEmailAddress(request.emailAddress());
-        userRequest.getUserDetail().setPassword(passwordEncoder.encode(request.password()));
 
         userRepository.save(userRequest);
         return Optional.of(UserMapper.INSTANCE.toUserResponse(userRequest));
@@ -94,16 +92,5 @@ public class UserServiceImpl implements UserService{
     @Transactional(readOnly = true)
     public boolean existUserById(Long id) {
         return userRepository.existsById(id);
-    }
-
-    @Override
-    @Transactional(readOnly = true)
-    public boolean loginSession(UserLoginRequest request) {
-        Optional<User> userOptional = userRepository.findByEmailAddress(request.email());
-        if(userOptional.isEmpty()) {
-            //TODO: NOTFOUND_RESOURCE EXCEPTION
-            throw new NotFoundResourceException("No se encontró el recurso solicitado");
-        }
-        return passwordEncoder.matches(request.password(), userOptional.get().getUserDetail().getPassword());
     }
 }
