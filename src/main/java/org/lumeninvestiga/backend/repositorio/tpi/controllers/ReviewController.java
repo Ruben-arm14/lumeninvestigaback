@@ -1,5 +1,6 @@
 package org.lumeninvestiga.backend.repositorio.tpi.controllers;
 
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import org.lumeninvestiga.backend.repositorio.tpi.dto.request.ReviewPostRequest;
 import org.lumeninvestiga.backend.repositorio.tpi.dto.request.ReviewUpdateRequest;
@@ -22,8 +23,9 @@ public class ReviewController {
     @PostMapping("/articles/{article_id}")
     public ResponseEntity<?> createReview(
             @PathVariable("article_id") Long articleId,
-            @Valid @RequestBody ReviewPostRequest request) {
-        return ResponseEntity.ok(reviewService.saveReview(articleId, request));
+            @Valid @RequestBody ReviewPostRequest request,
+            HttpServletRequest httpRequest) {
+        return ResponseEntity.ok(reviewService.saveReview(articleId, request, httpRequest));
     }
 
     @GetMapping("/reviews")
@@ -32,8 +34,8 @@ public class ReviewController {
     }
 
     @GetMapping("/{article_id}")
-    public ResponseEntity<?> readReviewsByArticleId(@PathVariable("article_id") Long reviewId) {
-        return ResponseEntity.ok(reviewService.getReviewsByArticleId(reviewId));
+    public ResponseEntity<?> readReviewsByArticleId(@PathVariable("article_id") Long reviewId, @PageableDefault Pageable pageable) {
+        return ResponseEntity.ok(reviewService.getReviewsByArticleId(reviewId, pageable));
     }
 
     @PutMapping("/articles/{article_id}/{review_id}")

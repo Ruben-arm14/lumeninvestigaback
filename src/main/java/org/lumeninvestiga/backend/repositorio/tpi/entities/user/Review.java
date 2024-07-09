@@ -36,6 +36,7 @@ public class Review {
         this.createdDate = LocalDateTime.now();
         this.likeCount = 0;
         this.comment = "";
+        this.article = new Article();
     }
 
     public Long getId() {

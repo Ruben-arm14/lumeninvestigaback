@@ -1,5 +1,6 @@
 package org.lumeninvestiga.backend.repositorio.tpi.services;
 
+import jakarta.servlet.http.HttpServletRequest;
 import org.lumeninvestiga.backend.repositorio.tpi.dto.mapper.ReviewMapper;
 import org.lumeninvestiga.backend.repositorio.tpi.dto.request.ReviewPostRequest;
 import org.lumeninvestiga.backend.repositorio.tpi.dto.request.ReviewUpdateRequest;
@@ -13,7 +14,9 @@ import org.lumeninvestiga.backend.repositorio.tpi.exceptions.ReferenceNotFoundEx
 import org.lumeninvestiga.backend.repositorio.tpi.repositories.ArticleRepository;
 import org.lumeninvestiga.backend.repositorio.tpi.repositories.ReviewRepository;
 import org.lumeninvestiga.backend.repositorio.tpi.repositories.UserRepository;
+import org.lumeninvestiga.backend.repositorio.tpi.security.filter.JwtService;
 import org.lumeninvestiga.backend.repositorio.tpi.utils.Utility;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -22,57 +25,61 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.Optional;
 
+import static org.lumeninvestiga.backend.repositorio.tpi.utils.Utility.extractTokenFromRequest;
+
 @Service
 public class ReviewServiceImpl implements ReviewService{
     private final ReviewRepository reviewRepository;
     private final UserRepository userRepository;
     private final ArticleRepository articleRepository;
+    private final JwtService jwtService;
 
-    public ReviewServiceImpl(ReviewRepository reviewRepository, UserRepository userRepository, ArticleRepository articleRepository) {
+    public ReviewServiceImpl(ReviewRepository reviewRepository, UserRepository userRepository, ArticleRepository articleRepository, JwtService jwtService) {
         this.reviewRepository = reviewRepository;
         this.userRepository = userRepository;
         this.articleRepository = articleRepository;
+        this.jwtService = jwtService;
     }
 
     @Override
     @Transactional
-    public Optional<ReviewResponse> saveReview(Long articleId, ReviewPostRequest request) {
-        //TODO: Actualizar lógica una vez se tenga la autenticación JWT.
-        Optional<User> userOptional = userRepository.findById(1L);
+    public Optional<ReviewResponse> saveReview(Long articleId, ReviewPostRequest request, HttpServletRequest httpRequest) {
+        String token = extractTokenFromRequest(httpRequest);
+        String username = jwtService.getUsernameFromToken(token);
+
+        Optional<User> currentUser = userRepository.findByUsername(username);
         Optional<Article> articleOptional = articleRepository.findById(articleId);
-        if(userOptional.isEmpty() && articleOptional.isEmpty()) {
+        if(currentUser.isEmpty() && articleOptional.isEmpty()) {
             throw new ReferenceNotFoundException("No se encontró referencia para el review");
         }
         if(request.comment().isBlank()) {
             throw new NotContentCommentException("No se encontró comentario en el review");
         }
         Review reviewRequest = new Review();
-        reviewRequest.getUser().setId(1L);
+        reviewRequest.setUser(currentUser.get());
         reviewRequest.getArticle().setId(articleId);
         reviewRequest.setComment(request.comment());
+
         reviewRepository.save(reviewRequest);
         return Optional.of(ReviewMapper.INSTANCE.toReviewResponse(reviewRequest));
     }
 
     @Override
     @Transactional(readOnly = true)
-    public List<ReviewResponse> getAllReviews(Pageable pageable) {
+    public Page<ReviewResponse> getAllReviews(Pageable pageable) {
         int page = Utility.getCurrentPage(pageable);
-        return reviewRepository.findAll(PageRequest.of(page, pageable.getPageSize())).stream()
-                .map(ReviewMapper.INSTANCE::toReviewResponse)
-                .toList();
+        Page<Review> reviews = reviewRepository.findAll(PageRequest.of(page, pageable.getPageSize()));
+        return reviews.map(ReviewMapper.INSTANCE::toReviewResponse);
     }
 
     @Override
     @Transactional(readOnly = true)
-    public List<ReviewResponse> getReviewsByArticleId(Long articleId) {
+    public Page<ReviewResponse> getReviewsByArticleId(Long articleId, Pageable pageable) {
         Article article = articleRepository.findById(articleId)
                 .orElseThrow(() -> new NotFoundResourceException("Artículo no encontrado"));
-
-        // Obtenemos la lista de reviews del artículo
-        return article.getReviews().stream()
-                .map(ReviewMapper.INSTANCE::toReviewResponse)
-                .toList();
+        int page = Utility.getCurrentPage(pageable);
+        Page<Review> reviews = reviewRepository.findAll(PageRequest.of(page, pageable.getPageSize()));
+        return reviews.map(ReviewMapper.INSTANCE::toReviewResponse);
     }
 
     @Override

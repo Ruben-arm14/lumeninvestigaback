@@ -1,5 +1,6 @@
 package org.lumeninvestiga.backend.repositorio.tpi.controllers;
 
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import org.lumeninvestiga.backend.repositorio.tpi.dto.request.ArticleUpdateRequest;
 import org.lumeninvestiga.backend.repositorio.tpi.services.ArticleService;
@@ -33,12 +34,29 @@ public class ArticleController {
         return ResponseEntity.status(HttpStatus.OK).body(articleService.getAllArticlesByKeyword(pageable, keyword));
     }
 
+    @GetMapping("/v2/search")
+    public ResponseEntity<?> searchArticles(
+            @PageableDefault Pageable pageable,
+            @RequestParam(required = false) String area,
+            @RequestParam(required = false) String subArea,
+            @RequestParam(required = false) String period,
+            @RequestParam(required = false) String ods,
+            @RequestParam(required = false) String title,
+            @RequestParam(required = false) String author,
+            @RequestParam(required = false) String advisor,
+            @RequestParam(required = false) String resume,
+            @RequestParam(required = false) String keywords) {
+        return ResponseEntity.status(HttpStatus.OK).body(
+                articleService.searchArticles(pageable, area, subArea, period, ods, title, author, advisor, resume, keywords)
+        );
+    }
+
     @PostMapping(
             value = "/upload",
             consumes = "multipart/form-data",
             produces = "application/json")
-    public ResponseEntity<?> uploadFiles(@RequestParam("files") List<MultipartFile> files) {
-        articleService.saveArticle(files);
+    public ResponseEntity<?> uploadFiles(@RequestParam("files") List<MultipartFile> files, HttpServletRequest httpRequest) {
+        articleService.saveArticle(files, httpRequest);
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 

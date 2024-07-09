@@ -1,6 +1,10 @@
 package org.lumeninvestiga.backend.repositorio.tpi.utils;
 
+import jakarta.servlet.http.HttpServletRequest;
+import org.lumeninvestiga.backend.repositorio.tpi.security.TokenJwtConfig;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpHeaders;
+import org.springframework.util.StringUtils;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -30,6 +34,14 @@ public class Utility {
         } else {
             return "No válido";
         }
+    }
+    //TODO: Analizar la forma de crear un JwtService Interface. (CONSULTARLO)
+    public static String extractTokenFromRequest(HttpServletRequest request) {
+        final String authHeader = request.getHeader(HttpHeaders.AUTHORIZATION);
+        if (StringUtils.hasText(authHeader) && authHeader.startsWith(TokenJwtConfig.PREFIX_TOKEN)) {
+            return authHeader.substring(7);
+        }
+        throw new IllegalArgumentException("Token no encontrado en la solicitud");
     }
 
     private Utility() {

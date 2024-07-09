@@ -1,39 +1,61 @@
 package org.lumeninvestiga.backend.repositorio.tpi.services;
 
+import jakarta.servlet.http.HttpServletRequest;
 import org.lumeninvestiga.backend.repositorio.tpi.dto.mapper.ArticleMapper;
 import org.lumeninvestiga.backend.repositorio.tpi.dto.response.ArticleResponse;
+import org.lumeninvestiga.backend.repositorio.tpi.dto.response.UserResponse;
 import org.lumeninvestiga.backend.repositorio.tpi.entities.data.Article;
-import org.lumeninvestiga.backend.repositorio.tpi.exceptions.InvalidDocumentFormatException;
-import org.lumeninvestiga.backend.repositorio.tpi.exceptions.NotFoundResourceException;
-import org.lumeninvestiga.backend.repositorio.tpi.exceptions.ResourceCountException;
-import org.lumeninvestiga.backend.repositorio.tpi.exceptions.SavingErrorException;
+import org.lumeninvestiga.backend.repositorio.tpi.entities.user.User;
+import org.lumeninvestiga.backend.repositorio.tpi.exceptions.*;
 import org.lumeninvestiga.backend.repositorio.tpi.repositories.ArticleRepository;
+import org.lumeninvestiga.backend.repositorio.tpi.repositories.UserRepository;
+import org.lumeninvestiga.backend.repositorio.tpi.security.filter.JwtService;
 import org.lumeninvestiga.backend.repositorio.tpi.utils.PDFAcademicExtractor;
 import org.lumeninvestiga.backend.repositorio.tpi.utils.Utility;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+
+import static org.lumeninvestiga.backend.repositorio.tpi.utils.Utility.extractTokenFromRequest;
 
 @Service
 public class ArticleServiceImpl implements ArticleService{
     private final ArticleRepository articleRepository;
+    private final UserRepository userRepository;
     private final PDFAcademicExtractor pdfAcademicExtractor;
+    private final JwtService jwtService;
 
-    public ArticleServiceImpl(ArticleRepository articleRepository, PDFAcademicExtractor pdfAcademicExtractor) {
+    public ArticleServiceImpl(ArticleRepository articleRepository, UserRepository userRepository, PDFAcademicExtractor pdfAcademicExtractor, JwtService jwtService) {
         this.articleRepository = articleRepository;
+        this.userRepository = userRepository;
         this.pdfAcademicExtractor = pdfAcademicExtractor;
+        this.jwtService = jwtService;
     }
 
     @Override
     @Transactional
-    public Optional<ArticleResponse> saveArticle(List<MultipartFile> multipartFiles) {
+    public Optional<ArticleResponse> saveArticle(List<MultipartFile> multipartFiles, HttpServletRequest httpRequest) {
+        String token = extractTokenFromRequest(httpRequest);
+        String username = jwtService.getUsernameFromToken(token);
+
+        //TODO: Considerar que al llamar estas retornando todos los valores de User, por lo tanto,
+        // se refleja en una sentencia SQL extensa cuando solo debería obtenerse el username para
+        // la validación. (CONSULTAR)
+        User currentUser = userRepository.findByUsername(username)
+                .orElseThrow(ReferenceNotFoundException::new);
+
         validateFiles(multipartFiles);
 
         MultipartFile articleFile = null;
@@ -56,6 +78,7 @@ public class ArticleServiceImpl implements ArticleService{
 
         Article articleDb = new Article();
         try {
+            articleDb.setUser(currentUser);
             articleDb.setName(articleFile.getOriginalFilename());
             articleDb.setSize(articleFile.getSize());
             articleDb.setCreatedDate(LocalDateTime.now());
@@ -133,6 +156,52 @@ public class ArticleServiceImpl implements ArticleService{
     @Transactional
     public boolean existArticleById(Long id) {
         return articleRepository.existsById(id);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Page<ArticleResponse> searchArticles(Pageable pageable, String area, String subArea, String period, String ods, String title, String author, String advisor, String resume, String keywords) {
+        Specification<Article> spec = Specification.where(null);
+
+        Map<String, String> criteriaMap = new HashMap<>();
+        criteriaMap.put("area", area);
+        criteriaMap.put("subArea", subArea);
+        criteriaMap.put("period", period);
+        criteriaMap.put("ods", ods);
+        criteriaMap.put("title", title);
+        criteriaMap.put("author", author);
+        criteriaMap.put("advisor", advisor);
+        criteriaMap.put("resume", resume);
+        criteriaMap.put("keywords", keywords);
+
+        for (Map.Entry<String, String> entry : criteriaMap.entrySet()) {
+            if (StringUtils.hasText(entry.getValue())) {
+                spec = spec.and(createSpecification(entry.getKey(), entry.getValue()));
+            }
+        }
+
+        Page<Article> articles = articleRepository.findAll(spec, pageable);
+        return articles.map(ArticleMapper.INSTANCE::toArticleResponse);
+    }
+
+    private Specification<Article> createSpecification(String key, String value) {
+        return (root, query, cb) -> {
+            switch (key) {
+                case "area":
+                case "subArea":
+                case "period":
+                case "ods":
+                    return cb.equal(root.get("articleDetail").get(key), value);
+                case "title":
+                case "author":
+                case "advisor":
+                case "resume":
+                case "keywords":
+                    return cb.like(cb.lower(root.get("articleDetail").get(key)), "%" + value.toLowerCase() + "%");
+                default:
+                    return null;
+            }
+        };
     }
 
     private void validateFiles(List<MultipartFile> files) {

@@ -135,8 +135,8 @@ public class RepositorioTpiApplication {
 		ArticleDetail detail1 = new ArticleDetail();
 		detail1.setArea("Ciencias de la Computación");
 		detail1.setSubArea("Inteligencia Artificial");
-		detail1.setPeriod("2023-2024");
-		detail1.setODS("9 - Industria, Innovación e Infraestructura");
+		detail1.setPeriod("2018-2");
+		detail1.setODS("9");
 		detail1.setTitle("Una Introducción al Aprendizaje Automático");
 		detail1.setAuthor("Juan Pérez");
 		detail1.setAdvisor("Dr. García");
@@ -150,8 +150,8 @@ public class RepositorioTpiApplication {
 		ArticleDetail detail2 = new ArticleDetail();
 		detail2.setArea("Ciencias Ambientales");
 		detail2.setSubArea("Cambio Climático");
-		detail2.setPeriod("2022-2023");
-		detail2.setODS("13 - Acción por el Clima");
+		detail2.setPeriod("2019-0");
+		detail2.setODS("13");
 		detail2.setTitle("El Impacto del Cambio Climático en las Zonas Costeras");
 		detail2.setAuthor("Ana López");
 		detail2.setAdvisor("Dr. Verde");
@@ -165,8 +165,8 @@ public class RepositorioTpiApplication {
 		ArticleDetail detail3 = new ArticleDetail();
 		detail3.setArea("Ciencias Médicas");
 		detail3.setSubArea("Genética");
-		detail3.setPeriod("2023-2024");
-		detail3.setODS("3 - Salud y Bienestar");
+		detail3.setPeriod("2019-0");
+		detail3.setODS("3");
 		detail3.setTitle("Avances en Ingeniería Genética");
 		detail3.setAuthor("Laura Gómez");
 		detail3.setAdvisor("Dr. Blanco");
@@ -180,8 +180,8 @@ public class RepositorioTpiApplication {
 		ArticleDetail detail4 = new ArticleDetail();
 		detail4.setArea("Física");
 		detail4.setSubArea("Mecánica Cuántica");
-		detail4.setPeriod("2021-2022");
-		detail4.setODS("4 - Educación de Calidad");
+		detail4.setPeriod("2019-0");
+		detail4.setODS("4");
 		detail4.setTitle("Entendiendo el Entrelaçamento Cuántico");
 		detail4.setAuthor("Carlos Martínez");
 		detail4.setAdvisor("Dr. Cuántico");
@@ -195,8 +195,8 @@ public class RepositorioTpiApplication {
 		ArticleDetail detail5 = new ArticleDetail();
 		detail5.setArea("Economía");
 		detail5.setSubArea("Economía Conductual");
-		detail5.setPeriod("2022-2023");
-		detail5.setODS("8 - Trabajo Decente y Crecimiento Económico");
+		detail5.setPeriod("2022-1");
+		detail5.setODS("8");
 		detail5.setTitle("La Psicología de las Decisiones Económicas");
 		detail5.setAuthor("María Fernández");
 		detail5.setAdvisor("Dr. Conductual");

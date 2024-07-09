@@ -23,7 +23,7 @@ public class ArticleDetail {
     @Column(nullable = false)
     private String period;
     @Column(name = "ods", nullable = false)
-    private String ODS;
+    private String ods;
     @Column(nullable = false)
     private String title;
     @Column(nullable = false)
@@ -39,7 +39,7 @@ public class ArticleDetail {
         this.area = "";
         this.subArea = "";
         this.period = "";
-        this.ODS = "";
+        this.ods = "";
         this.title = "";
         this.author = "";
         this.advisor = "";
@@ -76,11 +76,11 @@ public class ArticleDetail {
     }
 
     public String getODS() {
-        return ODS;
+        return ods;
     }
 
-    public void setODS(String ODS) {
-        this.ODS = ODS;
+    public void setODS(String ods) {
+        this.ods = ods;
     }
 
     public String getTitle() {
@@ -128,11 +128,11 @@ public class ArticleDetail {
         if (this == object) return true;
         if (object == null || getClass() != object.getClass()) return false;
         ArticleDetail that = (ArticleDetail) object;
-        return Objects.equals(id, that.id) && Objects.equals(area, that.area) && Objects.equals(subArea, that.subArea) && Objects.equals(period, that.period) && Objects.equals(ODS, that.ODS) && Objects.equals(title, that.title) && Objects.equals(author, that.author) && Objects.equals(advisor, that.advisor) && Objects.equals(resume, that.resume) && Objects.equals(keywords, that.keywords);
+        return Objects.equals(id, that.id) && Objects.equals(area, that.area) && Objects.equals(subArea, that.subArea) && Objects.equals(period, that.period) && Objects.equals(ods, that.ods) && Objects.equals(title, that.title) && Objects.equals(author, that.author) && Objects.equals(advisor, that.advisor) && Objects.equals(resume, that.resume) && Objects.equals(keywords, that.keywords);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, area, subArea, period, ODS, title, author, advisor, resume, keywords);
+        return Objects.hash(id, area, subArea, period, ods, title, author, advisor, resume, keywords);
     }
 }
