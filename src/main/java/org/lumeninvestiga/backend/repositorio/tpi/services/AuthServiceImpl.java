@@ -6,7 +6,7 @@ import org.lumeninvestiga.backend.repositorio.tpi.dto.response.AuthResponse;
 import org.lumeninvestiga.backend.repositorio.tpi.entities.user.Role;
 import org.lumeninvestiga.backend.repositorio.tpi.entities.user.User;
 import org.lumeninvestiga.backend.repositorio.tpi.repositories.UserRepository;
-import org.lumeninvestiga.backend.repositorio.tpi.security.filter.JwtService;
+import org.lumeninvestiga.backend.repositorio.tpi.security.jwt.JwtService;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.userdetails.UserDetails;

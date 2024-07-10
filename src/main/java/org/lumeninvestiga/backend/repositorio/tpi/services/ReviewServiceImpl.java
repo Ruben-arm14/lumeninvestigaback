@@ -14,7 +14,7 @@ import org.lumeninvestiga.backend.repositorio.tpi.exceptions.ReferenceNotFoundEx
 import org.lumeninvestiga.backend.repositorio.tpi.repositories.ArticleRepository;
 import org.lumeninvestiga.backend.repositorio.tpi.repositories.ReviewRepository;
 import org.lumeninvestiga.backend.repositorio.tpi.repositories.UserRepository;
-import org.lumeninvestiga.backend.repositorio.tpi.security.filter.JwtService;
+import org.lumeninvestiga.backend.repositorio.tpi.security.jwt.JwtService;
 import org.lumeninvestiga.backend.repositorio.tpi.utils.Utility;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -22,7 +22,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
 import java.util.Optional;
 
 import static org.lumeninvestiga.backend.repositorio.tpi.utils.Utility.extractTokenFromRequest;

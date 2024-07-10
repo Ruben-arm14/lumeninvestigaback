@@ -1,4 +1,4 @@
-package org.lumeninvestiga.backend.repositorio.tpi.security.filter;
+package org.lumeninvestiga.backend.repositorio.tpi.security.jwt;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;

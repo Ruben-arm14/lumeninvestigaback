@@ -1,6 +1,6 @@
 package org.lumeninvestiga.backend.repositorio.tpi.security;
 
-import org.lumeninvestiga.backend.repositorio.tpi.security.filter.JwtAuthenticationFilter;
+import org.lumeninvestiga.backend.repositorio.tpi.security.jwt.JwtAuthenticationFilter;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
