@@ -26,7 +26,7 @@ public class UserTest {
     public void testDefaultConstructor() {
         assertEquals("", user.getUsername());
         assertEquals("", user.getPassword());
-        assertEquals(Role.INVITED, user.getRole());
+        assertEquals(Role.USER, user.getRole());
         assertNotNull(user.getUserDetail());
         assertTrue(user.getReviews().isEmpty());
         assertTrue(user.getStorableItems().isEmpty());
