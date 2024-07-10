@@ -31,7 +31,7 @@ public class PDFAcademicExtractor {
         return extractFichaValues(text);
     }
 
-    private String extractTextFromPDF(byte[] pdfBytes, int startPage, int endPage) throws IOException {
+    public String extractTextFromPDF(byte[] pdfBytes, int startPage, int endPage) throws IOException {
         try (PDDocument document = PDDocument.load(new ByteArrayInputStream(pdfBytes))) {
             PDFTextStripper pdfStripper = new PDFTextStripper();
             pdfStripper.setStartPage(startPage);
@@ -40,7 +40,7 @@ public class PDFAcademicExtractor {
         }
     }
 
-    private List<String> extractArticleValues(String text) {
+    public List<String> extractArticleValues(String text) {
         String title = extractData(text, "^([A-Z\\s]+?)\\bAutor(es)\\b\n");
         String author = extractData(text, "(?i)Autor\\(es\\)?\\s*:?\\s*(.*?)(?=\\n\\d|\\n\\s*$)");
         String advisor = extractData(text, "(?s)Asesor\\s*\n(.+?)(?=\n|$)");
@@ -50,7 +50,7 @@ public class PDFAcademicExtractor {
         return List.of(title, author, advisor, calculatePeriod(period), summary, keywords);
     }
 
-    private List<String> extractFichaValues(String text) {
+    public List<String> extractFichaValues(String text) {
         String title = extractData(text, "(?s)2\\s*\\.\\s*Título del tema de Investigación:\\s*(?:Nota:\\s*)?(.+?)(?=\\d+\\s*\\.)");
         String author = extractData(text, "(?s)1\\s*\\.\\s*Integrante\\s*\\(s\\):\\s*●\\s*(.+?)(?=\\d+\\s*\\.)");
         String area = extractData(text, "(?s)3\\s*\\.\\s*Área y Sub-área:\\s*(?:\\(https://dl\\.acm\\.org/ccs\\)\\s*)?(.+?)(?=\\d+\\s*\\.)");
@@ -59,7 +59,7 @@ public class PDFAcademicExtractor {
         return List.of(title, author, areas, ods);
     }
 
-    private static String extractData(String text, String regex) {
+    public static String extractData(String text, String regex) {
         Pattern pattern = Pattern.compile(regex, Pattern.CASE_INSENSITIVE | Pattern.DOTALL);
         Matcher matcher = pattern.matcher(text);
         if (matcher.find()) {
@@ -68,7 +68,7 @@ public class PDFAcademicExtractor {
         return "No encontrado";
     }
 
-    private String extractSecondAndThirdWords(String text) {
+    public String extractSecondAndThirdWords(String text) {
         if(text.contains("->")) {
             String[] words = text.split("->");
             if (words.length >= 3) {
