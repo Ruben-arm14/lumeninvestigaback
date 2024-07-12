@@ -3,9 +3,11 @@ package org.lumeninvestiga.backend.repositorio.tpi.services;
 import jakarta.servlet.http.HttpServletRequest;
 import org.lumeninvestiga.backend.repositorio.tpi.dto.mapper.ArticleMapper;
 import org.lumeninvestiga.backend.repositorio.tpi.dto.response.ArticleResponse;
+import org.lumeninvestiga.backend.repositorio.tpi.dto.response.CommentDTO;
 import org.lumeninvestiga.backend.repositorio.tpi.entities.data.Article;
+import org.lumeninvestiga.backend.repositorio.tpi.entities.user.Review;
 import org.lumeninvestiga.backend.repositorio.tpi.entities.user.User;
-import org.lumeninvestiga.backend.repositorio.tpi.exceptions.*;
+import org.lumeninvestiga.backend.repositorio.tpi.exceptions.NotFoundResourceException;
 import org.lumeninvestiga.backend.repositorio.tpi.repositories.ArticleRepository;
 import org.lumeninvestiga.backend.repositorio.tpi.repositories.UserRepository;
 import org.lumeninvestiga.backend.repositorio.tpi.security.jwt.JwtService;
@@ -30,7 +32,7 @@ import java.util.Optional;
 import static org.lumeninvestiga.backend.repositorio.tpi.utils.Utility.extractTokenFromRequest;
 
 @Service
-public class ArticleServiceImpl implements ArticleService{
+public class ArticleServiceImpl implements ArticleService {
     private final ArticleRepository articleRepository;
     private final UserRepository userRepository;
     private final PDFAcademicExtractor pdfAcademicExtractor;
@@ -49,11 +51,8 @@ public class ArticleServiceImpl implements ArticleService{
         String token = extractTokenFromRequest(httpRequest);
         String username = jwtService.getUsernameFromToken(token);
 
-        //TODO: Considerar que al llamar estas retornando todos los valores de User, por lo tanto,
-        // se refleja en una sentencia SQL extensa cuando solo debería obtenerse el username para
-        // la validación. (CONSULTAR)
         User currentUser = userRepository.findByUsername(username)
-                .orElseThrow(ReferenceNotFoundException::new);
+                .orElseThrow(() -> new NotFoundResourceException("User not found"));
 
         validateFiles(multipartFiles);
 
@@ -67,12 +66,12 @@ public class ArticleServiceImpl implements ArticleService{
             } else if (fileName.startsWith("ficha")) {
                 fichaFile = file;
             } else {
-                throw new InvalidDocumentFormatException("Formato de archivo no reconocido: " + fileName);
+                throw new IllegalArgumentException("Formato de archivo no reconocido: " + fileName);
             }
         }
 
         if (articleFile == null || fichaFile == null) {
-            throw new ResourceCountException("Se esperan dos documentos, uno de tipo artículo y otro de tipo ficha");
+            throw new IllegalArgumentException("Se esperan dos documentos, uno de tipo artículo y otro de tipo ficha");
         }
 
         Article articleDb = new Article();
@@ -96,11 +95,11 @@ public class ArticleServiceImpl implements ArticleService{
 
             articleDb.getArticleDetail().setArea(getArea(fichaList));
             articleDb.getArticleDetail().setSubArea(getSubArea(fichaList));
-            articleDb.getArticleDetail().setODS(fichaList.get(3));
+            articleDb.getArticleDetail().setOds(fichaList.get(3));
 
             articleRepository.save(articleDb);
         } catch (IOException e) {
-            throw new SavingErrorException("Error al guardar el artículo", e);
+            throw new RuntimeException("Error al guardar el artículo", e);
         }
         return Optional.of(ArticleMapper.INSTANCE.toArticleResponse(articleDb));
     }
@@ -127,7 +126,7 @@ public class ArticleServiceImpl implements ArticleService{
     @Transactional(readOnly = true)
     public Optional<ArticleResponse> getArticleById(Long id) {
         Optional<Article> articleOptional = articleRepository.findById(id);
-        if(articleOptional.isEmpty()) {
+        if (articleOptional.isEmpty()) {
             throw new NotFoundResourceException("Entidad no encontrada");
         }
         return Optional.of(ArticleMapper.INSTANCE.toArticleResponse(articleOptional.get()));
@@ -137,7 +136,7 @@ public class ArticleServiceImpl implements ArticleService{
     @Transactional(readOnly = true)
     public Optional<ArticleResponse> getArticleByName(String name) {
         Optional<Article> articleOptional = articleRepository.findByName(name);
-        if(articleOptional.isEmpty()) {
+        if (articleOptional.isEmpty()) {
             throw new NotFoundResourceException("Entidad no encontrada");
         }
         return Optional.of(ArticleMapper.INSTANCE.toArticleResponse(articleOptional.get()));
@@ -146,7 +145,7 @@ public class ArticleServiceImpl implements ArticleService{
     @Override
     @Transactional
     public void deleteArticleById(Long id) {
-        if(existArticleById(id)) {
+        if (existArticleById(id)) {
             articleRepository.deleteById(id);
         }
     }
@@ -205,7 +204,7 @@ public class ArticleServiceImpl implements ArticleService{
 
     private void validateFiles(List<MultipartFile> files) {
         if (files.size() != 2 || files.isEmpty()) {
-            throw new ResourceCountException("Se esperan dos documentos");
+            throw new IllegalArgumentException("Se esperan dos documentos");
         }
     }
 
@@ -219,5 +218,21 @@ public class ArticleServiceImpl implements ArticleService{
 
     private String getSubArea(List<String> fichaList) {
         return fichaList.get(2).split(",")[1].trim();
+    }
+
+    @Override
+    public CommentDTO addComment(Long articleId, CommentDTO commentDTO, User user) {
+        Article article = articleRepository.findById(articleId)
+                .orElseThrow(() -> new NotFoundResourceException("Article not found"));
+
+        Review review = new Review();
+        review.setComment(commentDTO.getComment());
+        review.setUser(user);
+        review.setArticle(article);
+
+        article.getReviews().add(review);
+        articleRepository.save(article);
+
+        return new CommentDTO(user.getUsername(), review.getComment(), review.getCreatedDate(), review.getLikeCount());
     }
 }

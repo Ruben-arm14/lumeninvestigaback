@@ -2,19 +2,13 @@ package org.lumeninvestiga.backend.repositorio.tpi.entities.data;
 
 import jakarta.persistence.*;
 
-import java.util.HashSet;
 import java.util.Objects;
-import java.util.Set;
 
 @Entity
-@Table(
-        name = "article_details"
-)
+@Table(name = "article_details")
 public class ArticleDetail {
     @Id
-    @GeneratedValue(
-            strategy = GenerationType.IDENTITY
-    )
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @Column(nullable = false)
     private String area;
@@ -30,10 +24,14 @@ public class ArticleDetail {
     private String author;
     @Column(nullable = false)
     private String advisor;
-    @Column(nullable = false ,columnDefinition = "TEXT")
+    @Column(nullable = false, columnDefinition = "TEXT")
     private String resume;
     @Column(nullable = false)
     private String keywords;
+    @Column(nullable = false)
+    private String curso;
+    @Column(nullable = false)
+    private String profesor;
 
     public ArticleDetail() {
         this.area = "";
@@ -45,6 +43,8 @@ public class ArticleDetail {
         this.advisor = "";
         this.resume = "";
         this.keywords = "";
+        this.curso = "";
+        this.profesor = "";
     }
 
     public Long getId() {
@@ -75,11 +75,11 @@ public class ArticleDetail {
         this.period = period;
     }
 
-    public String getODS() {
+    public String getOds() {
         return ods;
     }
 
-    public void setODS(String ods) {
+    public void setOds(String ods) {
         this.ods = ods;
     }
 
@@ -123,16 +123,43 @@ public class ArticleDetail {
         this.keywords = keywords;
     }
 
+    public String getCurso() {
+        return curso;
+    }
+
+    public void setCurso(String curso) {
+        this.curso = curso;
+    }
+
+    public String getProfesor() {
+        return profesor;
+    }
+
+    public void setProfesor(String profesor) {
+        this.profesor = profesor;
+    }
+
     @Override
     public boolean equals(Object object) {
         if (this == object) return true;
         if (object == null || getClass() != object.getClass()) return false;
         ArticleDetail that = (ArticleDetail) object;
-        return Objects.equals(id, that.id) && Objects.equals(area, that.area) && Objects.equals(subArea, that.subArea) && Objects.equals(period, that.period) && Objects.equals(ods, that.ods) && Objects.equals(title, that.title) && Objects.equals(author, that.author) && Objects.equals(advisor, that.advisor) && Objects.equals(resume, that.resume) && Objects.equals(keywords, that.keywords);
+        return Objects.equals(id, that.id) &&
+                Objects.equals(area, that.area) &&
+                Objects.equals(subArea, that.subArea) &&
+                Objects.equals(period, that.period) &&
+                Objects.equals(ods, that.ods) &&
+                Objects.equals(title, that.title) &&
+                Objects.equals(author, that.author) &&
+                Objects.equals(advisor, that.advisor) &&
+                Objects.equals(resume, that.resume) &&
+                Objects.equals(keywords, that.keywords) &&
+                Objects.equals(curso, that.curso) &&
+                Objects.equals(profesor, that.profesor);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, area, subArea, period, ods, title, author, advisor, resume, keywords);
+        return Objects.hash(id, area, subArea, period, ods, title, author, advisor, resume, keywords, curso, profesor);
     }
 }

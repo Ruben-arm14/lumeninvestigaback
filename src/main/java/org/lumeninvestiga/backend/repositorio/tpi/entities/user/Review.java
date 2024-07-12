@@ -8,21 +8,19 @@ import java.time.LocalDateTime;
 import java.util.Objects;
 
 @Entity
-@Table(
-        name = "reviews"
-)
+@Table(name = "reviews")
 public class Review {
     @Id
-    @GeneratedValue(
-            strategy = GenerationType.IDENTITY
-    )
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     @Column(name = "like_count", nullable = false)
     private Integer likeCount;
+
     @Column(nullable = false)
     private String comment;
-    @Column(name="created_date",  nullable = false)
-    @Temporal(TemporalType.TIMESTAMP)
+
+    @Column(name="created_date", nullable = false)
     private LocalDateTime createdDate;
 
     @ManyToOne(targetEntity = User.class)
@@ -63,6 +61,10 @@ public class Review {
         return createdDate;
     }
 
+    public void setCreatedDate(LocalDateTime createdDate) {
+        this.createdDate = createdDate;
+    }
+
     public User getUser() {
         return user;
     }
@@ -94,7 +96,12 @@ public class Review {
         if (this == object) return true;
         if (object == null || getClass() != object.getClass()) return false;
         Review review = (Review) object;
-        return Objects.equals(id, review.id) && Objects.equals(likeCount, review.likeCount) && Objects.equals(comment, review.comment) && Objects.equals(createdDate, review.createdDate) && Objects.equals(user, review.user) && Objects.equals(article, review.article);
+        return Objects.equals(id, review.id) &&
+                Objects.equals(likeCount, review.likeCount) &&
+                Objects.equals(comment, review.comment) &&
+                Objects.equals(createdDate, review.createdDate) &&
+                Objects.equals(user, review.user) &&
+                Objects.equals(article, review.article);
     }
 
     @Override

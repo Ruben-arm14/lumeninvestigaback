@@ -22,6 +22,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Optional;
 
 import static org.lumeninvestiga.backend.repositorio.tpi.utils.Utility.extractTokenFromRequest;
@@ -74,10 +75,17 @@ public class ReviewServiceImpl implements ReviewService{
     @Override
     @Transactional(readOnly = true)
     public Page<ReviewResponse> getReviewsByArticleId(Long articleId, Pageable pageable) {
-        Article article = articleRepository.findById(articleId)
-                .orElseThrow(() -> new NotFoundResourceException("Artículo no encontrado"));
         int page = Utility.getCurrentPage(pageable);
-        Page<Review> reviews = reviewRepository.findAll(PageRequest.of(page, pageable.getPageSize()));
+        articleRepository.findById(articleId)
+                .orElseThrow(
+                        () -> new NotFoundResourceException("Artículo no encontrado")
+                );
+
+        Page<Review> reviews = reviewRepository.findByArticleId(articleId, PageRequest.of(page, pageable.getPageSize()));
+
+        if(reviews.isEmpty()) {
+            throw new NotFoundResourceException("No se encontraron comentarios");
+        }
         return reviews.map(ReviewMapper.INSTANCE::toReviewResponse);
     }
 
@@ -95,8 +103,8 @@ public class ReviewServiceImpl implements ReviewService{
     public void updateReviewComment(Long id, ReviewUpdateRequest request) {
         Optional<Review> reviewOptional = reviewRepository.findById(id);
         reviewOptional.ifPresentOrElse(reviewDb -> {
-            reviewDb.setComment(request.comment());
-        },
+                    reviewDb.setComment(request.comment());
+                },
                 () -> new NotFoundResourceException("No se encontró el recurso solicitado")
         );
     }

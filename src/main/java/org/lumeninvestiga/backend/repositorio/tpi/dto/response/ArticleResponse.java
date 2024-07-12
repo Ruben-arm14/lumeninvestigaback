@@ -3,6 +3,8 @@ package org.lumeninvestiga.backend.repositorio.tpi.dto.response;
 import java.util.List;
 
 public record ArticleResponse(
-        ArticleDetailDTO articleDetailDTO
+        Long id,
+        ArticleDetailDTO articleDetailDTO,
+        List<CommentDTO> comments
 ) {
 }

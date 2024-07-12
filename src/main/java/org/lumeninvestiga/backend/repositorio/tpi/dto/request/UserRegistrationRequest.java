@@ -15,5 +15,5 @@ public record UserRegistrationRequest(
         String emailAddress,
         @Size(min = 8, message = "Password must be at least 8 characters long")
         String password
-        ) {
+) {
 }

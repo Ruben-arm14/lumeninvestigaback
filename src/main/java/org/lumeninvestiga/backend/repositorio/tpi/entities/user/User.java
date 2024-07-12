@@ -1,98 +1,50 @@
 package org.lumeninvestiga.backend.repositorio.tpi.entities.user;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
-import jakarta.persistence.*;
+import org.lumeninvestiga.backend.repositorio.tpi.entities.data.SavedArticle;
 import org.lumeninvestiga.backend.repositorio.tpi.entities.data.StorableItem;
 import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import jakarta.persistence.*;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.Objects;
 
 @Entity
-@Inheritance(
-        strategy = InheritanceType.JOINED
-)
-@Table(
-        name = "users"
-)
+@Table(name = "users")
 public class User implements UserDetails {
     @Id
-    @GeneratedValue(
-            strategy = GenerationType.SEQUENCE,
-            generator = "user_seq"
-    )
-    @SequenceGenerator(
-            name = "user_seq",
-            sequenceName = "user_sequence",
-            allocationSize = 1
-    )
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false)
+    @Column(nullable = false, unique = true)
     private String username;
-    @Column(nullable = true)
-    private String password;
+
     @Column(nullable = false)
+    private String password;
+
     @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
     private Role role;
 
-    @OneToOne(
-            targetEntity = UserDetail.class,
-            cascade = {
-                    CascadeType.PERSIST,
-                    CascadeType.REMOVE
-            })
-    @JsonManagedReference
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "user_detail_id", referencedColumnName = "id")
     private UserDetail userDetail;
 
-    @OneToMany(
-            targetEntity = Review.class,
-            cascade = {
-                    CascadeType.PERSIST,
-                    CascadeType.REMOVE
-            },
-            fetch = FetchType.LAZY,
-            mappedBy = "user"
-    )
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonManagedReference
-    private List<Review> reviews;
+    private List<StorableItem> storableItems = new ArrayList<>();
 
-    @OneToMany(
-            targetEntity = StorableItem.class,
-            cascade = CascadeType.REMOVE,
-            fetch = FetchType.LAZY,
-            mappedBy = "user"
-    )
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonManagedReference
-    private List<StorableItem> storableItems;
+    private List<SavedArticle> savedArticles = new ArrayList<>();
 
-    public User() {
-        this.username = "";
-        this.password = "";
-        this.role = Role.USER;
-        this.userDetail = new UserDetail();
-        this.reviews = new ArrayList<>();
-        this.storableItems = new ArrayList<>();
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
+    // Implementación de métodos de la interfaz UserDetails
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        // Implementación de este método si es necesario
+        return null;
     }
 
     @Override
@@ -103,43 +55,6 @@ public class User implements UserDetails {
     @Override
     public String getUsername() {
         return this.username;
-    }
-
-    public Role getRole() {
-        return role;
-    }
-
-    public void setRole(Role role) {
-        this.role = role;
-    }
-
-    public UserDetail getUserDetail() {
-        return userDetail;
-    }
-
-    public void setUserDetail(UserDetail userDetail) {
-        this.userDetail = userDetail;
-    }
-
-    public List<Review> getReviews() {
-        return reviews;
-    }
-
-    public void setReviews(List<Review> reviews) {
-        this.reviews = reviews;
-    }
-
-    public List<StorableItem> getStorableItems() {
-        return storableItems;
-    }
-
-    public void setStorableItems(List<StorableItem> storableItems) {
-        this.storableItems = storableItems;
-    }
-
-    @Override
-    public Collection<? extends GrantedAuthority> getAuthorities() {
-        return List.of(new SimpleGrantedAuthority(role.name()));
     }
 
     @Override
@@ -162,36 +77,72 @@ public class User implements UserDetails {
         return true;
     }
 
-    public void addReview(Review review) {
-        this.reviews.add(review);
-        review.setUser(this);
+    // Métodos específicos de la clase User
+    public Long getId() {
+        return id;
     }
 
-    public void removeReview(Review review) {
-        this.reviews.remove(review);
-        review.setUser(null);
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public Role getRole() {
+        return role;
+    }
+
+    public void setRole(Role role) {
+        this.role = role;
+    }
+
+    public UserDetail getUserDetail() {
+        return userDetail;
+    }
+
+    public void setUserDetail(UserDetail userDetail) {
+        this.userDetail = userDetail;
+    }
+
+    public List<StorableItem> getStorableItems() {
+        return storableItems;
+    }
+
+    public void setStorableItems(List<StorableItem> storableItems) {
+        this.storableItems = storableItems;
     }
 
     public void addStorableItem(StorableItem storableItem) {
-        this.storableItems.add(storableItem);
+        storableItems.add(storableItem);
         storableItem.setUser(this);
     }
 
     public void removeStorableItem(StorableItem storableItem) {
-        this.storableItems.remove(storableItem);
+        storableItems.remove(storableItem);
         storableItem.setUser(null);
     }
 
-    @Override
-    public boolean equals(Object object) {
-        if (this == object) return true;
-        if (object == null || getClass() != object.getClass()) return false;
-        User user = (User) object;
-        return Objects.equals(id, user.id) && Objects.equals(userDetail, user.userDetail) && Objects.equals(reviews, user.reviews) && Objects.equals(storableItems, user.storableItems) && role == user.role;
+    public List<SavedArticle> getSavedArticles() {
+        return savedArticles;
     }
 
-    @Override
-    public int hashCode() {
-        return Objects.hash(id, userDetail, reviews, storableItems, role);
+    public void setSavedArticles(List<SavedArticle> savedArticles) {
+        this.savedArticles = savedArticles;
+    }
+
+    public void addSavedArticle(SavedArticle savedArticle) {
+        savedArticles.add(savedArticle);
+        savedArticle.setUser(this);
+    }
+
+    public void removeSavedArticle(SavedArticle savedArticle) {
+        savedArticles.remove(savedArticle);
+        savedArticle.setUser(null);
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
     }
 }

@@ -68,14 +68,17 @@ public class UserServiceImpl implements UserService{
     @Transactional
     public Optional<UserResponse> updateUserById(Long id, UserUpdateRequest request) {
         Optional<User> userOptional = userRepository.findById(id);
-        userOptional.ifPresentOrElse(userDb -> {
-            userDb.getUserDetail().setName(request.name());
-            userDb.getUserDetail().setLastName(request.lastName());
-            userDb.getUserDetail().setEmailAddress(request.emailAddress());
-        },
-                () -> new NotFoundResourceException("No se encontró el recurso solicitado")
-        );
-        return Optional.of(UserMapper.INSTANCE.toUserResponse(userOptional.get()));
+        if(userOptional.isEmpty()) {
+            throw new NotFoundResourceException("No se encontró el recurso solicitado");
+        }
+
+        User userDb = userOptional.get();
+        userDb.getUserDetail().setName(request.name());
+        userDb.getUserDetail().setLastName(request.lastName());
+        userDb.getUserDetail().setEmailAddress(request.emailAddress());
+        userRepository.save(userDb);
+
+        return Optional.of(UserMapper.INSTANCE.toUserResponse(userDb));
     }
 
     @Override

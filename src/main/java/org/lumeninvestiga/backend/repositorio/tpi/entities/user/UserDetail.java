@@ -1,38 +1,33 @@
 package org.lumeninvestiga.backend.repositorio.tpi.entities.user;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 
-import java.util.Objects;
-
 @Entity
-@Table(
-        name = "user_details"
-)
+@Table(name = "user_details")
 public class UserDetail {
     @Id
-    @GeneratedValue(
-            strategy = GenerationType.IDENTITY
-    )
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     @Column(nullable = false)
     private String name;
-    @Column(name = "last_name", nullable = false)
+
+    @Column(nullable = false)
     private String lastName;
-    @Column(name="email_address", nullable = false, unique = true)
+
+    @Column(nullable = false, unique = true)
     private String emailAddress;
-    @JsonBackReference
-    @Transient
+
+    @OneToOne(mappedBy = "userDetail", cascade = CascadeType.ALL)
     private User user;
 
-    public UserDetail() {
-        this.name = "";
-        this.lastName = "";
-        this.emailAddress = "";
-    }
-
+    // Getters y Setters
     public Long getId() {
         return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public String getName() {
@@ -65,18 +60,5 @@ public class UserDetail {
 
     public void setUser(User user) {
         this.user = user;
-    }
-
-    @Override
-    public boolean equals(Object object) {
-        if (this == object) return true;
-        if (object == null || getClass() != object.getClass()) return false;
-        UserDetail that = (UserDetail) object;
-        return Objects.equals(id, that.id) && Objects.equals(name, that.name) && Objects.equals(lastName, that.lastName) && Objects.equals(emailAddress, that.emailAddress) && Objects.equals(user, that.user);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(id, name, lastName, emailAddress, user);
     }
 }

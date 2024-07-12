@@ -1,14 +1,18 @@
 package org.lumeninvestiga.backend.repositorio.tpi.dto.response;
 
+import java.util.List;
+
 public record ArticleDetailDTO(
         String area,
         String subArea,
         String period,
-        String ods,
+        List<String> ods,
         String title,
         String author,
         String advisor,
         String resume,
-        String keywords
+        List<String> keywords,
+        String curso,
+        String profesor
 ) {
 }

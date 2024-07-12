@@ -5,7 +5,6 @@ import org.lumeninvestiga.backend.repositorio.tpi.entities.user.User;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.factory.Mappers;
-import org.springframework.stereotype.Service;
 
 @Mapper(componentModel = "spring")
 public interface UserMapper {
